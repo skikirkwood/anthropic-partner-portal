@@ -31,7 +31,7 @@ interface PartnerFields {
   name: string;
   slug: string;
   logo?: Asset;
-  tier: "Gold" | "Silver" | "Bronze";
+  tier: "Platinum" | "Gold" | "Silver";
   summary?: string;
   capabilities?: string[];
   websiteUrl?: string;
@@ -51,7 +51,7 @@ interface ResourceFields {
     | "Technical Documentation"
     | "Sales Enablement"
     | "API Reference";
-  minimumTier?: "Bronze" | "Silver" | "Gold";
+  minimumTier?: "Silver" | "Gold" | "Platinum";
   file?: Asset;
   relatedPartner?: { sys: { id: string } };
 }
@@ -81,7 +81,7 @@ export interface Partner {
   name: string;
   slug: string;
   logoUrl?: string;
-  tier: "Gold" | "Silver" | "Bronze";
+  tier: "Platinum" | "Gold" | "Silver";
   summary?: string;
   capabilities: string[];
   websiteUrl?: string;
@@ -149,7 +149,7 @@ function mapPartner(item: any): Partner {
     logoUrl: logoAsset?.fields?.file?.url
       ? `https:${logoAsset.fields.file.url}`
       : undefined,
-    tier: f.tier ?? "Bronze",
+    tier: f.tier ?? "Silver",
     summary: f.summary,
     capabilities: f.capabilities ?? [],
     websiteUrl: f.websiteUrl,

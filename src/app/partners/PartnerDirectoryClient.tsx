@@ -4,7 +4,7 @@ import { useState } from "react";
 import PartnerCard from "@/components/PartnerCard";
 import type { Partner } from "@/lib/contentful";
 
-const tiers = ["All", "Gold", "Silver", "Bronze"] as const;
+const tiers = ["All", "Platinum", "Gold", "Silver"] as const;
 
 export default function PartnerDirectoryClient({
   partners,

@@ -8,17 +8,17 @@ const resourceTypes = [
   "All",
   "Guide",
   "Case Study",
-  "Technical Documentation",
-  "Sales Enablement",
-  "API Reference",
+  "API Documentation",
+  "Whitepaper",
+  "Video",
 ];
 
-const tierLevels = ["All", "Bronze", "Silver", "Gold"];
+const tierLevels = ["All", "Silver", "Gold", "Platinum"];
 
 const tierIcons: Record<string, string> = {
-  Bronze: "text-orange-600",
   Silver: "text-slate-500",
   Gold: "text-tawny",
+  Platinum: "text-violet-600",
 };
 
 export default function ResourcesClient({
