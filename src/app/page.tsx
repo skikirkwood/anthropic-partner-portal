@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getFeaturedPartners, getFeaturedAnnouncements } from "@/lib/contentful";
 import PartnerCard from "@/components/PartnerCard";
 import TierBadge from "@/components/TierBadge";
+import AnthropicLogo from "@/components/AnthropicLogo";
 
 export const revalidate = 60;
 
@@ -21,7 +22,7 @@ export default async function HomePage() {
         </div>
         <div className="relative mx-auto max-w-6xl px-6 py-24 text-center sm:py-32">
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
-            <span className="text-2xl font-bold text-white">A</span>
+            <AnthropicLogo className="h-7 w-7 text-white" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Anthropic Partner Portal

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import AnthropicLogo from "./AnthropicLogo";
 
 const navLinks = [
   { href: "/partners", label: "Partners" },
@@ -17,7 +18,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-charcoal">
-            <span className="text-sm font-bold text-white">A</span>
+            <AnthropicLogo className="h-4 w-4 text-white" />
           </div>
           <span className="text-lg font-semibold text-charcoal">
             Partner Portal
