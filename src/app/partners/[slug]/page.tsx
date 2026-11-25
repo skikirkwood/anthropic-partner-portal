@@ -9,6 +9,7 @@ import {
 } from "@/lib/contentful";
 import { getLocale } from "@/lib/locale";
 import TierBadge from "@/components/TierBadge";
+import DataSourceBadge from "@/components/DataSourceBadge";
 import PartnerDetailLive from "./PartnerDetailLive";
 import type { Metadata } from "next";
 
@@ -58,13 +59,16 @@ export default async function PartnerDetailPage({
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
-      <nav className="mb-8 text-sm text-ink-muted">
-        <Link href="/partners" className="hover:text-ink">
-          Partners
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-ink">{partner.name}</span>
-      </nav>
+      <div className="mb-8 flex items-center justify-between">
+        <nav className="text-sm text-ink-muted">
+          <Link href="/partners" className="hover:text-ink">
+            Partners
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-ink">{partner.name}</span>
+        </nav>
+        <DataSourceBadge source="salesforce" />
+      </div>
 
       <div className="flex items-start gap-5">
         {partner.logoUrl ? (

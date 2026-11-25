@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAllAnnouncements } from "@/lib/contentful";
 import { getLocale } from "@/lib/locale";
+import DataSourceBadge from "@/components/DataSourceBadge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,7 +16,10 @@ export default async function AnnouncementsPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="font-serif text-3xl font-semibold text-ink">Announcements</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-serif text-3xl font-semibold text-ink">Announcements</h1>
+        <DataSourceBadge source="contentful" />
+      </div>
       <p className="mt-2 text-ink-muted">
         News, updates, and program announcements for the Anthropic partner
         community.

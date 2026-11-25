@@ -1,5 +1,6 @@
 import { getAllResources } from "@/lib/contentful";
 import { getLocale } from "@/lib/locale";
+import DataSourceBadge from "@/components/DataSourceBadge";
 import ResourcesClient from "./ResourcesClient";
 import type { Metadata } from "next";
 
@@ -15,7 +16,10 @@ export default async function ResourcesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="font-serif text-3xl font-semibold text-ink">Resources</h1>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="font-serif text-3xl font-semibold text-ink">Resources</h1>
+        <DataSourceBadge source="contentful" />
+      </div>
       <p className="mt-2 text-ink-muted">
         Technical documentation, guides, and enablement materials for Anthropic
         partners.
