@@ -1,6 +1,9 @@
 "use client";
 
-import { useContentfulLiveUpdates } from "@contentful/live-preview/react";
+import {
+  useContentfulLiveUpdates,
+  useContentfulInspectorMode,
+} from "@contentful/live-preview/react";
 import Link from "next/link";
 import TierBadge from "@/components/TierBadge";
 import type { Resource } from "@/lib/contentful";
@@ -13,6 +16,9 @@ export default function PartnerDetailLive({
   resources: Resource[];
 }) {
   const entry = useContentfulLiveUpdates(rawEntry);
+  const inspectorProps = useContentfulInspectorMode({
+    entryId: entry.sys.id,
+  });
   const f = entry.fields;
 
   const logoUrl = f.logo?.fields?.file?.url
@@ -35,6 +41,7 @@ export default function PartnerDetailLive({
             src={logoUrl}
             alt={`${f.name} logo`}
             className="h-16 w-16 rounded-lg object-contain"
+            {...inspectorProps({ fieldId: "logo" })}
           />
         ) : (
           <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-cream-200 text-2xl font-semibold text-ink">
@@ -43,10 +50,15 @@ export default function PartnerDetailLive({
         )}
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="font-serif text-3xl font-semibold text-ink">
+            <h1
+              className="font-serif text-3xl font-semibold text-ink"
+              {...inspectorProps({ fieldId: "name" })}
+            >
               {f.name}
             </h1>
-            <TierBadge tier={f.tier} />
+            <span {...inspectorProps({ fieldId: "tier" })}>
+              <TierBadge tier={f.tier} />
+            </span>
           </div>
           {f.websiteUrl && (
             <a
@@ -54,6 +66,7 @@ export default function PartnerDetailLive({
               target="_blank"
               rel="noopener noreferrer"
               className="mt-1 inline-block text-sm text-tawny hover:text-tawny-hover"
+              {...inspectorProps({ fieldId: "websiteUrl" })}
             >
               {f.websiteUrl.replace(/^https?:\/\/(www\.)?/, "")} ↗
             </a>
@@ -64,14 +77,22 @@ export default function PartnerDetailLive({
       {f.summary && (
         <div className="mt-8 rounded-lg border border-cream-200 bg-white p-6">
           <h2 className="text-sm font-medium text-ink-muted">About</h2>
-          <p className="mt-3 leading-relaxed text-ink-light">{f.summary}</p>
+          <p
+            className="mt-3 leading-relaxed text-ink-light"
+            {...inspectorProps({ fieldId: "summary" })}
+          >
+            {f.summary}
+          </p>
         </div>
       )}
 
       {f.capabilities && f.capabilities.length > 0 && (
         <div className="mt-6 rounded-lg border border-cream-200 bg-white p-6">
           <h2 className="text-sm font-medium text-ink-muted">Capabilities</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div
+            className="mt-3 flex flex-wrap gap-2"
+            {...inspectorProps({ fieldId: "capabilities" })}
+          >
             {f.capabilities.map((cap: string) => (
               <span
                 key={cap}
@@ -90,6 +111,7 @@ export default function PartnerDetailLive({
           <a
             href={`mailto:${f.contactEmail}`}
             className="mt-3 inline-block text-tawny hover:text-tawny-hover"
+            {...inspectorProps({ fieldId: "contactEmail" })}
           >
             {f.contactEmail}
           </a>

@@ -1,6 +1,9 @@
 "use client";
 
-import { useContentfulLiveUpdates } from "@contentful/live-preview/react";
+import {
+  useContentfulLiveUpdates,
+  useContentfulInspectorMode,
+} from "@contentful/live-preview/react";
 import Link from "next/link";
 import RichTextRenderer from "@/components/RichTextRenderer";
 
@@ -10,6 +13,9 @@ export default function AnnouncementDetailLive({
   rawEntry: any;
 }) {
   const entry = useContentfulLiveUpdates(rawEntry);
+  const inspectorProps = useContentfulInspectorMode({
+    entryId: entry.sys.id,
+  });
   const f = entry.fields;
 
   return (
@@ -23,7 +29,10 @@ export default function AnnouncementDetailLive({
       </nav>
 
       <div className="flex items-center gap-3">
-        <time className="text-sm text-ink-muted">
+        <time
+          className="text-sm text-ink-muted"
+          {...inspectorProps({ fieldId: "date" })}
+        >
           {new Date(f.date).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
@@ -31,17 +40,26 @@ export default function AnnouncementDetailLive({
           })}
         </time>
         {f.featured && (
-          <span className="rounded-full bg-tawny-light px-2 py-0.5 text-xs font-semibold text-tawny">
+          <span
+            className="rounded-full bg-tawny-light px-2 py-0.5 text-xs font-semibold text-tawny"
+            {...inspectorProps({ fieldId: "featured" })}
+          >
             Featured
           </span>
         )}
       </div>
-      <h1 className="font-serif mt-3 text-3xl font-semibold text-ink">
+      <h1
+        className="font-serif mt-3 text-3xl font-semibold text-ink"
+        {...inspectorProps({ fieldId: "title" })}
+      >
         {f.title}
       </h1>
 
       {f.body && (
-        <div className="mt-8">
+        <div
+          className="mt-8"
+          {...inspectorProps({ fieldId: "body" })}
+        >
           <RichTextRenderer document={f.body} />
         </div>
       )}
