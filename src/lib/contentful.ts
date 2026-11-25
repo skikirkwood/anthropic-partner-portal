@@ -117,14 +117,18 @@ export interface Page {
   body?: Document;
 }
 
+export interface Cta {
+  text: string;
+  link: string;
+  openInNewTab?: boolean;
+}
+
 export interface Homepage {
   id: string;
   heroHeadline: string;
   heroSubtitle?: string;
-  primaryCtaText?: string;
-  primaryCtaLink?: string;
-  secondaryCtaText?: string;
-  secondaryCtaLink?: string;
+  primaryCta?: Cta;
+  secondaryCta?: Cta;
   partnersHeading?: string;
   partnersDescription?: string;
   newsHeading?: string;
@@ -194,16 +198,24 @@ function mapPage(item: any): Page {
   };
 }
 
+function resolveCta(linkField: any): Cta | undefined {
+  if (!linkField?.fields) return undefined;
+  const cf = linkField.fields;
+  return {
+    text: cf.text ?? "",
+    link: cf.link ?? "",
+    openInNewTab: cf.openInNewTab ?? false,
+  };
+}
+
 function mapHomepage(item: any): Homepage {
   const f = item.fields;
   return {
     id: item.sys.id,
     heroHeadline: f.heroHeadline ?? "",
     heroSubtitle: f.heroSubtitle,
-    primaryCtaText: f.primaryCtaText,
-    primaryCtaLink: f.primaryCtaLink,
-    secondaryCtaText: f.secondaryCtaText,
-    secondaryCtaLink: f.secondaryCtaLink,
+    primaryCta: resolveCta(f.primaryCta),
+    secondaryCta: resolveCta(f.secondaryCta),
     partnersHeading: f.partnersHeading,
     partnersDescription: f.partnersDescription,
     newsHeading: f.newsHeading,
@@ -237,6 +249,7 @@ export async function getRawHomepageEntry(
   const res = await c.getEntries({
     content_type: "homepage",
     limit: 1,
+    include: 2,
   });
   return res.items[0] ?? null;
 }
@@ -375,6 +388,7 @@ export async function getHomepage(preview = false): Promise<Homepage | null> {
   const res = await c.getEntries({
     content_type: "homepage",
     limit: 1,
+    include: 2,
   });
   return res.items.length > 0 ? mapHomepage(res.items[0]) : null;
 }
@@ -417,10 +431,8 @@ export interface AboutPage {
   milestones: AboutPageMilestone[];
   ctaHeading?: string;
   ctaDescription?: string;
-  ctaPrimaryText?: string;
-  ctaPrimaryLink?: string;
-  ctaSecondaryText?: string;
-  ctaSecondaryLink?: string;
+  primaryCta?: Cta;
+  secondaryCta?: Cta;
 }
 
 function mapAboutPage(item: any): AboutPage {
@@ -443,10 +455,8 @@ function mapAboutPage(item: any): AboutPage {
     milestones: Array.isArray(f.milestones) ? f.milestones : [],
     ctaHeading: f.ctaHeading,
     ctaDescription: f.ctaDescription,
-    ctaPrimaryText: f.ctaPrimaryText,
-    ctaPrimaryLink: f.ctaPrimaryLink,
-    ctaSecondaryText: f.ctaSecondaryText,
-    ctaSecondaryLink: f.ctaSecondaryLink,
+    primaryCta: resolveCta(f.primaryCta),
+    secondaryCta: resolveCta(f.secondaryCta),
   };
 }
 
@@ -457,6 +467,7 @@ export async function getAboutPage(
   const res = await c.getEntries({
     content_type: "aboutPage",
     limit: 1,
+    include: 2,
   });
   return res.items.length > 0 ? mapAboutPage(res.items[0]) : null;
 }
@@ -468,6 +479,7 @@ export async function getRawAboutPageEntry(
   const res = await c.getEntries({
     content_type: "aboutPage",
     limit: 1,
+    include: 2,
   });
   return res.items[0] ?? null;
 }

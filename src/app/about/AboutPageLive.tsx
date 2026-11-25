@@ -48,10 +48,11 @@ export default function AboutPageLive({ rawEntry }: { rawEntry: any }) {
     : [];
   const ctaHeading = f.ctaHeading ?? "Ready to partner with Anthropic?";
   const ctaDescription = f.ctaDescription ?? "";
-  const ctaPrimaryText = f.ctaPrimaryText ?? "Explore partners";
-  const ctaPrimaryLink = f.ctaPrimaryLink ?? "/partners";
-  const ctaSecondaryText = f.ctaSecondaryText ?? "Visit anthropic.com";
-  const ctaSecondaryLink = f.ctaSecondaryLink ?? "https://www.anthropic.com";
+  const ctaPrimaryText = f.primaryCta?.fields?.text ?? "Explore partners";
+  const ctaPrimaryLink = f.primaryCta?.fields?.link ?? "/partners";
+  const ctaSecondaryText = f.secondaryCta?.fields?.text ?? "Visit anthropic.com";
+  const ctaSecondaryLink = f.secondaryCta?.fields?.link ?? "https://www.anthropic.com";
+  const ctaSecondaryNewTab = f.secondaryCta?.fields?.openInNewTab ?? true;
 
   const missionParagraphs = missionBody
     .split("\n")
@@ -253,16 +254,15 @@ export default function AboutPageLive({ rawEntry }: { rawEntry: any }) {
             <Link
               href={ctaPrimaryLink}
               className="rounded-md bg-ink px-5 py-2.5 text-sm font-medium text-cream-50 transition-colors hover:bg-ink-light"
-              {...inspectorProps({ fieldId: "ctaPrimaryText" })}
+              {...inspectorProps({ fieldId: "primaryCta" })}
             >
               {ctaPrimaryText}
             </Link>
             <a
               href={ctaSecondaryLink}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...(ctaSecondaryNewTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="rounded-md border border-cream-200 bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-cream-300 hover:bg-cream-50"
-              {...inspectorProps({ fieldId: "ctaSecondaryText" })}
+              {...inspectorProps({ fieldId: "secondaryCta" })}
             >
               {ctaSecondaryText}
             </a>

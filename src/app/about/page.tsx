@@ -117,11 +117,12 @@ export default async function AboutPage() {
   const ctaDescription =
     about?.ctaDescription ??
     "Whether you're a global consultancy or a specialized technology firm, the Claude Partner Network has a place for you.";
-  const ctaPrimaryText = about?.ctaPrimaryText ?? "Explore partners";
-  const ctaPrimaryLink = about?.ctaPrimaryLink ?? "/partners";
-  const ctaSecondaryText = about?.ctaSecondaryText ?? "Visit anthropic.com";
+  const ctaPrimaryText = about?.primaryCta?.text ?? "Explore partners";
+  const ctaPrimaryLink = about?.primaryCta?.link ?? "/partners";
+  const ctaSecondaryText = about?.secondaryCta?.text ?? "Visit anthropic.com";
   const ctaSecondaryLink =
-    about?.ctaSecondaryLink ?? "https://www.anthropic.com";
+    about?.secondaryCta?.link ?? "https://www.anthropic.com";
+  const ctaSecondaryNewTab = about?.secondaryCta?.openInNewTab ?? true;
 
   const missionParagraphs = missionBody.split("\n").filter((p) => p.trim());
 
@@ -275,8 +276,7 @@ export default async function AboutPage() {
             </Link>
             <a
               href={ctaSecondaryLink}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...(ctaSecondaryNewTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="rounded-md border border-cream-200 bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-cream-300 hover:bg-cream-50"
             >
               {ctaSecondaryText}

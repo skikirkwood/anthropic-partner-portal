@@ -28,10 +28,10 @@ export default function HomepageLive({
   const heroSubtitle =
     f.heroSubtitle ??
     "Resources, enablement, and everything you need to build and sell with Claude — from the Claude Partner Network.";
-  const primaryCtaText = f.primaryCtaText ?? "Explore partners";
-  const primaryCtaLink = f.primaryCtaLink ?? "/partners";
-  const secondaryCtaText = f.secondaryCtaText ?? "Browse resources";
-  const secondaryCtaLink = f.secondaryCtaLink ?? "/resources";
+  const primaryCtaText = f.primaryCta?.fields?.text ?? "Explore partners";
+  const primaryCtaLink = f.primaryCta?.fields?.link ?? "/partners";
+  const secondaryCtaText = f.secondaryCta?.fields?.text ?? "Browse resources";
+  const secondaryCtaLink = f.secondaryCta?.fields?.link ?? "/resources";
   const partnersHeading = f.partnersHeading ?? "Featured partners";
   const partnersDescription =
     f.partnersDescription ??
@@ -63,14 +63,14 @@ export default function HomepageLive({
             <Link
               href={primaryCtaLink}
               className="rounded-md bg-ink px-5 py-2.5 text-sm font-medium text-cream-50 transition-colors hover:bg-ink-light"
-              {...inspectorProps({ fieldId: "primaryCtaText" })}
+              {...inspectorProps({ fieldId: "primaryCta" })}
             >
               {primaryCtaText}
             </Link>
             <Link
               href={secondaryCtaLink}
               className="rounded-md border border-cream-200 bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-cream-300 hover:bg-cream-50"
-              {...inspectorProps({ fieldId: "secondaryCtaText" })}
+              {...inspectorProps({ fieldId: "secondaryCta" })}
             >
               {secondaryCtaText}
             </Link>

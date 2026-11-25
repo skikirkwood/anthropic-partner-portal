@@ -40,10 +40,10 @@ export default async function HomePage() {
   const heroSubtitle =
     homepage?.heroSubtitle ??
     "Resources, enablement, and everything you need to build and sell with Claude — from the Claude Partner Network.";
-  const primaryCtaText = homepage?.primaryCtaText ?? "Explore partners";
-  const primaryCtaLink = homepage?.primaryCtaLink ?? "/partners";
-  const secondaryCtaText = homepage?.secondaryCtaText ?? "Browse resources";
-  const secondaryCtaLink = homepage?.secondaryCtaLink ?? "/resources";
+  const primaryCtaText = homepage?.primaryCta?.text ?? "Explore partners";
+  const primaryCtaLink = homepage?.primaryCta?.link ?? "/partners";
+  const secondaryCtaText = homepage?.secondaryCta?.text ?? "Browse resources";
+  const secondaryCtaLink = homepage?.secondaryCta?.link ?? "/resources";
   const partnersHeading = homepage?.partnersHeading ?? "Featured partners";
   const partnersDescription =
     homepage?.partnersDescription ??
