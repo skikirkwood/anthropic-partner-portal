@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContentfulPreviewProvider from "@/components/ContentfulPreviewProvider";
 import SessionWrapper from "@/components/SessionWrapper";
+import ClaudeAssistant from "@/components/ClaudeAssistant";
 
 const serif = Source_Serif_4({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <ClaudeAssistant />
           </ContentfulPreviewProvider>
         </SessionWrapper>
       </body>
