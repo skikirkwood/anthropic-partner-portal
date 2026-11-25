@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Resource } from "@/lib/contentful";
 
 const resourceTypes = [
@@ -68,9 +69,10 @@ export default function ResourcesClient({
       {filtered.length > 0 ? (
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((r) => (
-            <div
+            <Link
               key={r.id}
-              className="flex flex-col rounded-lg border border-cream-200 bg-white p-6"
+              href={`/resources/${r.slug}`}
+              className="group flex flex-col rounded-lg border border-cream-200 bg-white p-6 transition-colors hover:border-cream-300"
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="rounded-md bg-cream-100 px-2 py-0.5 text-xs font-medium text-ink-muted">
@@ -86,7 +88,7 @@ export default function ResourcesClient({
                   </span>
                 )}
               </div>
-              <h3 className="mt-3 font-serif text-lg font-semibold text-ink">
+              <h3 className="mt-3 font-serif text-lg font-semibold text-ink transition-colors group-hover:text-tawny">
                 {r.title}
               </h3>
               {r.description && (
@@ -94,17 +96,10 @@ export default function ResourcesClient({
                   {r.description}
                 </p>
               )}
-              {r.fileUrl && (
-                <a
-                  href={r.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center text-sm font-medium text-tawny hover:text-tawny-hover"
-                >
-                  Download &darr;
-                </a>
-              )}
-            </div>
+              <span className="mt-4 inline-flex items-center text-sm font-medium text-tawny group-hover:text-tawny-hover">
+                Read more &rarr;
+              </span>
+            </Link>
           ))}
         </div>
       ) : (

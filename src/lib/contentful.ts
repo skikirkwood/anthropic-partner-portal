@@ -82,6 +82,7 @@ export interface Resource {
   title: string;
   slug: string;
   description?: string;
+  body?: Document;
   resourceType: string;
   minimumTier?: string;
   fileUrl?: string;
@@ -135,6 +136,7 @@ function mapResource(item: any): Resource {
     title: f.title ?? "",
     slug: f.slug ?? "",
     description: f.description,
+    body: f.body,
     resourceType: f.resourceType ?? "Guide",
     minimumTier: f.minimumTier,
     fileUrl: fileAsset?.fields?.file?.url
@@ -218,6 +220,18 @@ export async function getResourcesByPartner(
     include: 2,
   });
   return res.items.map(mapResource);
+}
+
+export async function getResourceBySlug(
+  slug: string
+): Promise<Resource | null> {
+  const res = await client.getEntries({
+    content_type: "resource",
+    "fields.slug": slug,
+    limit: 1,
+    include: 2,
+  });
+  return res.items.length > 0 ? mapResource(res.items[0]) : null;
 }
 
 export async function getAllAnnouncements(): Promise<Announcement[]> {
