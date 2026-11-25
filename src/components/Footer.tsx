@@ -23,6 +23,14 @@ export default function Footer() {
             <ul className="mt-3 space-y-2.5">
               <li>
                 <Link
+                  href="/about"
+                  className="text-sm text-ink-muted hover:text-ink"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/partners"
                   className="text-sm text-ink-muted hover:text-ink"
                 >

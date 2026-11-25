@@ -5,6 +5,7 @@ import { useState } from "react";
 import AnthropicLogo from "./AnthropicLogo";
 
 const navLinks = [
+  { href: "/about", label: "About" },
   { href: "/partners", label: "Partners" },
   { href: "/resources", label: "Resources" },
   { href: "/announcements", label: "News" },
