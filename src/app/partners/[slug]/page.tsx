@@ -90,7 +90,7 @@ export default async function PartnerDetailPage({
               rel="noopener noreferrer"
               className="mt-1 inline-block text-sm text-tawny hover:text-tawny-hover"
             >
-              {partner.websiteUrl.replace(/^https?:\/\/(www\.)?/, "")} &nearr;
+              {partner.websiteUrl.replace(/^https?:\/\/(www\.)?/, "")} ↗
             </a>
           )}
         </div>

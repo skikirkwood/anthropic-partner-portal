@@ -55,7 +55,7 @@ export default function PartnerDetailLive({
               rel="noopener noreferrer"
               className="mt-1 inline-block text-sm text-tawny hover:text-tawny-hover"
             >
-              {f.websiteUrl.replace(/^https?:\/\/(www\.)?/, "")} &nearr;
+              {f.websiteUrl.replace(/^https?:\/\/(www\.)?/, "")} ↗
             </a>
           )}
         </div>
