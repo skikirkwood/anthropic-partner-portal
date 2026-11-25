@@ -1,6 +1,16 @@
-# Anthropic Partner Portal
+# Claude Partner Hub
 
-A Next.js 14 (App Router) application powered by Contentful, showcasing Anthropic's partner ecosystem.
+A Next.js 14 (App Router) partner portal for the Anthropic partner ecosystem, powered by Contentful CMS. Built as a demo showcasing content management, localization, live preview, and authentication.
+
+**Live site:** [anthropic-partner-portal.colorfuldemo.com](https://anthropic-partner-portal.colorfuldemo.com)
+
+## Features
+
+- **CMS-driven content** — all pages pull structured content from Contentful, including rich text, linked assets, and reference fields
+- **Live Preview & Inspector Mode** — editors see changes in real time via Contentful's Draft Mode integration
+- **Localization** — cookie-based locale switcher (English, French-Canadian, German) with server-side rendering in the selected language
+- **Authentication** — NextAuth.js (Auth.js v5) with Credentials provider and route-level protection
+- **Custom design system** — Tailwind CSS with custom color tokens (cream, ink, tawny) inspired by anthropic.com
 
 ## Getting Started
 
@@ -12,13 +22,18 @@ A Next.js 14 (App Router) application powered by Contentful, showcasing Anthropi
 
 2. **Configure environment variables:**
 
-   Copy `.env.local.example` to `.env.local` and fill in your Contentful CDA token:
+   Create `.env.local` with the following:
 
-   ```bash
-   cp .env.local.example .env.local
+   ```
+   CONTENTFUL_SPACE_ID=<your-space-id>
+   CONTENTFUL_DELIVERY_TOKEN=<CDA-token>
+   CONTENTFUL_PREVIEW_TOKEN=<CPA-token>
+   CONTENTFUL_ENVIRONMENT=master
+   CONTENTFUL_PREVIEW_SECRET=<a-random-secret>
+   AUTH_SECRET=<a-random-secret>
    ```
 
-   You need a Content Delivery API token from your Contentful space settings (Settings > API keys).
+   CDA and CPA tokens are found in Contentful under Settings > API keys.
 
 3. **Run the development server:**
 
@@ -28,26 +43,53 @@ A Next.js 14 (App Router) application powered by Contentful, showcasing Anthropi
 
    Open [http://localhost:3000](http://localhost:3000).
 
+## Demo Credentials
+
+| Email | Password | Role |
+| --- | --- | --- |
+| demo@anthropic.com | demo123 | Anthropic staff |
+| partner@deloitte.com | deloitte123 | Partner user |
+
 ## Deploy to Vercel
 
 1. Push this repo to GitHub.
 2. Import the repo in Vercel.
-3. Add the environment variables (`CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`, `CONTENTFUL_ENVIRONMENT`) in the Vercel project settings.
+3. Add all environment variables in the Vercel project settings.
 4. Deploy.
 
 ## Content Model
 
-This app consumes four Contentful content types:
+Seven Contentful content types power the site:
 
-- **Partner** — partner organizations with tier, capabilities, and profile info
-- **Resource** — documents and guides, optionally linked to a partner
-- **Announcement** — news items with rich text bodies
-- **Page** — generic CMS-driven pages
+| Content Type | Purpose |
+| --- | --- |
+| **Homepage** | Hero section, headings, and featured content configuration |
+| **About Page** | Mission, values, stats, milestones, and CTA sections |
+| **Partner** | Partner organizations with tier (Platinum/Gold/Silver), capabilities, and profile |
+| **Resource** | Guides, case studies, API docs, whitepapers, and videos — optionally linked to a partner |
+| **Announcement** | News items with rich text bodies and featured flag |
+| **Page** | Generic CMS-driven pages |
+| **CTA** | Reusable call-to-action blocks referenced by Homepage and About Page |
+
+All user-facing text fields are localized across three locales: `en-US` (default), `fr-CA`, and `de-DE`.
+
+## Localization
+
+The locale switcher in the top nav sets a `locale` cookie. Server components read this cookie and pass the locale to every Contentful fetch call. Contentful returns localized content with automatic fallback to `en-US` when a translation is missing.
+
+## Live Preview
+
+Draft Mode is activated via `/api/draft?secret=<CONTENTFUL_PREVIEW_SECRET>&slug=<slug>`. When active, the site fetches from Contentful's Preview API and renders a `ContentfulPreviewProvider` that enables live field updates and Inspector Mode annotations.
+
+Content Preview URLs are configured in Contentful under Settings > Content Preview for each content type.
 
 ## Tech Stack
 
 - Next.js 14 (App Router)
 - TypeScript
-- Tailwind CSS
-- Contentful CDA via `contentful` SDK
+- Tailwind CSS (custom design tokens)
+- Contentful CDA/CPA via `contentful` SDK
 - `@contentful/rich-text-react-renderer` for rich text
+- `@contentful/live-preview` for Draft Mode live updates and Inspector Mode
+- NextAuth.js v5 (Auth.js) for authentication
+- Deployed on Vercel
