@@ -230,6 +230,17 @@ export async function getRawEntryBySlug(
   return res.items[0] ?? null;
 }
 
+export async function getRawHomepageEntry(
+  preview = false
+): Promise<any | null> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
+    content_type: "homepage",
+    limit: 1,
+  });
+  return res.items[0] ?? null;
+}
+
 // ---------------------------------------------------------------------------
 // Fetch helpers (all accept preview flag for Draft Mode)
 // ---------------------------------------------------------------------------

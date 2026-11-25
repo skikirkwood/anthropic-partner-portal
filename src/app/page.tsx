@@ -1,20 +1,39 @@
 import Link from "next/link";
+import { draftMode } from "next/headers";
 import {
   getHomepage,
   getFeaturedPartners,
   getFeaturedAnnouncements,
+  getRawHomepageEntry,
 } from "@/lib/contentful";
 import PartnerCard from "@/components/PartnerCard";
 import AnthropicLogo from "@/components/AnthropicLogo";
+import HomepageLive from "./HomepageLive";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [homepage, partners, announcements] = await Promise.all([
-    getHomepage(),
-    getFeaturedPartners(),
-    getFeaturedAnnouncements(2),
+  const { isEnabled: preview } = draftMode();
+
+  const [partners, announcements] = await Promise.all([
+    getFeaturedPartners(preview),
+    getFeaturedAnnouncements(2, preview),
   ]);
+
+  if (preview) {
+    const rawEntry = await getRawHomepageEntry(true);
+    if (rawEntry) {
+      return (
+        <HomepageLive
+          rawEntry={rawEntry}
+          partners={partners}
+          announcements={announcements}
+        />
+      );
+    }
+  }
+
+  const homepage = await getHomepage(preview);
 
   // Fallbacks in case the homepage entry is missing
   const heroHeadline = homepage?.heroHeadline ?? "Claude Partner Hub";
