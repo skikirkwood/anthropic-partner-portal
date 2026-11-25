@@ -179,18 +179,19 @@ export default function ClaudeAssistant() {
   const msgsRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Build the greeting when first opened
+  // Build (or rebuild) the greeting whenever the session loads
   useEffect(() => {
-    if (messages.length === 0) {
-      const name = session?.user?.name?.split(" ")[0] || session?.user?.email?.split("@")[0] || "there";
-      setMessages([
-        {
-          from: "bot",
-          html: `Hi ${name}, I'm the <strong>Claude Partner Assistant</strong>. I can help you find information across your Salesforce Partner Portal, Contentful resources, and Anthropic documentation. What can I help you with?`,
-        },
-      ]);
-    }
-  }, [session, messages.length]);
+    const name = session?.user?.name?.split(" ")[0] || session?.user?.email?.split("@")[0] || "there";
+    const greeting: BotMessage = {
+      from: "bot",
+      html: `Hi ${name}, I'm the <strong>Claude Partner Assistant</strong>. I can help you find information across your Salesforce Partner Portal, Contentful resources, and Anthropic documentation. What can I help you with?`,
+    };
+    setMessages((prev) => {
+      // Only replace if still showing the initial greeting (1 message, from bot)
+      if (prev.length <= 1) return [greeting];
+      return prev;
+    });
+  }, [session]);
 
   // Auto-scroll
   useEffect(() => {
