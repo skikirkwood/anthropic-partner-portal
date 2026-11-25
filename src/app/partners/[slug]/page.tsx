@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
 import Link from "next/link";
 import {
   getAllPartners,
   getPartnerBySlug,
   getResourcesByPartner,
+  getRawEntryBySlug,
 } from "@/lib/contentful";
 import TierBadge from "@/components/TierBadge";
+import PartnerDetailLive from "./PartnerDetailLive";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -33,6 +36,19 @@ export default async function PartnerDetailPage({
 }: {
   params: { slug: string };
 }) {
+  const { isEnabled: preview } = draftMode();
+
+  if (preview) {
+    const rawEntry = await getRawEntryBySlug("partner", params.slug, true);
+    if (!rawEntry) notFound();
+    // Still fetch resources with preview for the related section
+    const partner = await getPartnerBySlug(params.slug, true);
+    const resources = partner
+      ? await getResourcesByPartner(partner.id, true)
+      : [];
+    return <PartnerDetailLive rawEntry={rawEntry} resources={resources} />;
+  }
+
   const partner = await getPartnerBySlug(params.slug);
   if (!partner) notFound();
 
@@ -40,7 +56,6 @@ export default async function PartnerDetailPage({
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
-      {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-ink-muted">
         <Link href="/partners" className="hover:text-ink">
           Partners
@@ -49,7 +64,6 @@ export default async function PartnerDetailPage({
         <span className="text-ink">{partner.name}</span>
       </nav>
 
-      {/* Header */}
       <div className="flex items-start gap-5">
         {partner.logoUrl ? (
           <img
@@ -82,24 +96,18 @@ export default async function PartnerDetailPage({
         </div>
       </div>
 
-      {/* Summary */}
       {partner.summary && (
         <div className="mt-8 rounded-lg border border-cream-200 bg-white p-6">
-          <h2 className="text-sm font-medium text-ink-muted">
-            About
-          </h2>
+          <h2 className="text-sm font-medium text-ink-muted">About</h2>
           <p className="mt-3 leading-relaxed text-ink-light">
             {partner.summary}
           </p>
         </div>
       )}
 
-      {/* Capabilities */}
       {partner.capabilities.length > 0 && (
         <div className="mt-6 rounded-lg border border-cream-200 bg-white p-6">
-          <h2 className="text-sm font-medium text-ink-muted">
-            Capabilities
-          </h2>
+          <h2 className="text-sm font-medium text-ink-muted">Capabilities</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {partner.capabilities.map((cap) => (
               <span
@@ -113,12 +121,9 @@ export default async function PartnerDetailPage({
         </div>
       )}
 
-      {/* Contact */}
       {partner.contactEmail && (
         <div className="mt-6 rounded-lg border border-cream-200 bg-white p-6">
-          <h2 className="text-sm font-medium text-ink-muted">
-            Contact
-          </h2>
+          <h2 className="text-sm font-medium text-ink-muted">Contact</h2>
           <a
             href={`mailto:${partner.contactEmail}`}
             className="mt-3 inline-block text-tawny hover:text-tawny-hover"
@@ -128,7 +133,6 @@ export default async function PartnerDetailPage({
         </div>
       )}
 
-      {/* Related Resources */}
       {resources.length > 0 && (
         <div className="mt-10">
           <h2 className="font-serif text-xl font-semibold text-ink">
@@ -142,7 +146,9 @@ export default async function PartnerDetailPage({
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-serif font-semibold text-ink">{r.title}</h3>
+                    <h3 className="font-serif font-semibold text-ink">
+                      {r.title}
+                    </h3>
                     {r.description && (
                       <p className="mt-1 text-sm text-ink-muted line-clamp-2">
                         {r.description}

@@ -2,7 +2,7 @@ import { createClient, type EntrySkeletonType, type Asset } from "contentful";
 import type { Document } from "@contentful/rich-text-types";
 
 // ---------------------------------------------------------------------------
-// Client
+// Clients — CDA (published) and CPA (preview / draft)
 // ---------------------------------------------------------------------------
 
 const client = createClient({
@@ -11,8 +11,19 @@ const client = createClient({
   environment: process.env.CONTENTFUL_ENVIRONMENT ?? "master",
 });
 
+const previewClient = createClient({
+  space: process.env.CONTENTFUL_SPACE_ID!,
+  accessToken: process.env.CONTENTFUL_PREVIEW_TOKEN!,
+  environment: process.env.CONTENTFUL_ENVIRONMENT ?? "master",
+  host: "preview.contentful.com",
+});
+
+function getClient(preview = false) {
+  return preview ? previewClient : client;
+}
+
 // ---------------------------------------------------------------------------
-// Content-type skeletons
+// Content-type skeletons (internal)
 // ---------------------------------------------------------------------------
 
 interface PartnerFields {
@@ -33,6 +44,7 @@ interface ResourceFields {
   title: string;
   slug: string;
   description?: string;
+  body?: Document;
   resourceType:
     | "Guide"
     | "Case Study"
@@ -169,11 +181,31 @@ function mapPage(item: any): Page {
 }
 
 // ---------------------------------------------------------------------------
-// Fetch helpers
+// Raw entry fetcher (for live preview — returns unprocessed Contentful entry)
 // ---------------------------------------------------------------------------
 
-export async function getAllPartners(): Promise<Partner[]> {
-  const res = await client.getEntries({
+export async function getRawEntryBySlug(
+  contentType: string,
+  slug: string,
+  preview = false
+): Promise<any | null> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
+    content_type: contentType,
+    "fields.slug": slug,
+    limit: 1,
+    include: 2,
+  });
+  return res.items[0] ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Fetch helpers (all accept preview flag for Draft Mode)
+// ---------------------------------------------------------------------------
+
+export async function getAllPartners(preview = false): Promise<Partner[]> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "partner",
     order: ["fields.name"],
     include: 2,
@@ -181,8 +213,9 @@ export async function getAllPartners(): Promise<Partner[]> {
   return res.items.map(mapPartner);
 }
 
-export async function getFeaturedPartners(): Promise<Partner[]> {
-  const res = await client.getEntries({
+export async function getFeaturedPartners(preview = false): Promise<Partner[]> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "partner",
     "fields.featured": true,
     include: 2,
@@ -191,9 +224,11 @@ export async function getFeaturedPartners(): Promise<Partner[]> {
 }
 
 export async function getPartnerBySlug(
-  slug: string
+  slug: string,
+  preview = false
 ): Promise<Partner | null> {
-  const res = await client.getEntries({
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "partner",
     "fields.slug": slug,
     limit: 1,
@@ -202,8 +237,9 @@ export async function getPartnerBySlug(
   return res.items.length > 0 ? mapPartner(res.items[0]) : null;
 }
 
-export async function getAllResources(): Promise<Resource[]> {
-  const res = await client.getEntries({
+export async function getAllResources(preview = false): Promise<Resource[]> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "resource",
     order: ["fields.title"],
     include: 2,
@@ -212,9 +248,11 @@ export async function getAllResources(): Promise<Resource[]> {
 }
 
 export async function getResourcesByPartner(
-  partnerId: string
+  partnerId: string,
+  preview = false
 ): Promise<Resource[]> {
-  const res = await client.getEntries({
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "resource",
     "fields.relatedPartner.sys.id": partnerId,
     include: 2,
@@ -223,9 +261,11 @@ export async function getResourcesByPartner(
 }
 
 export async function getResourceBySlug(
-  slug: string
+  slug: string,
+  preview = false
 ): Promise<Resource | null> {
-  const res = await client.getEntries({
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "resource",
     "fields.slug": slug,
     limit: 1,
@@ -234,8 +274,9 @@ export async function getResourceBySlug(
   return res.items.length > 0 ? mapResource(res.items[0]) : null;
 }
 
-export async function getAllAnnouncements(): Promise<Announcement[]> {
-  const res = await client.getEntries({
+export async function getAllAnnouncements(preview = false): Promise<Announcement[]> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "announcement",
     order: ["-fields.date"],
     include: 2,
@@ -244,9 +285,11 @@ export async function getAllAnnouncements(): Promise<Announcement[]> {
 }
 
 export async function getFeaturedAnnouncements(
-  limit: number = 2
+  limit: number = 2,
+  preview = false
 ): Promise<Announcement[]> {
-  const res = await client.getEntries({
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "announcement",
     "fields.featured": true,
     order: ["-fields.date"],
@@ -257,9 +300,11 @@ export async function getFeaturedAnnouncements(
 }
 
 export async function getAnnouncementBySlug(
-  slug: string
+  slug: string,
+  preview = false
 ): Promise<Announcement | null> {
-  const res = await client.getEntries({
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "announcement",
     "fields.slug": slug,
     limit: 1,
@@ -268,8 +313,12 @@ export async function getAnnouncementBySlug(
   return res.items.length > 0 ? mapAnnouncement(res.items[0]) : null;
 }
 
-export async function getPageBySlug(slug: string): Promise<Page | null> {
-  const res = await client.getEntries({
+export async function getPageBySlug(
+  slug: string,
+  preview = false
+): Promise<Page | null> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
     content_type: "page",
     "fields.slug": slug,
     limit: 1,

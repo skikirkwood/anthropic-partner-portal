@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Source_Serif_4 } from "next/font/google";
+import { draftMode } from "next/headers";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ContentfulPreviewProvider from "@/components/ContentfulPreviewProvider";
 
 const serif = Source_Serif_4({
   subsets: ["latin"],
@@ -22,12 +24,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isEnabled: isDraftMode } = draftMode();
+
   return (
     <html lang="en" className={serif.variable}>
       <body className="flex min-h-screen flex-col font-sans antialiased">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ContentfulPreviewProvider isDraftMode={isDraftMode}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ContentfulPreviewProvider>
       </body>
     </html>
   );

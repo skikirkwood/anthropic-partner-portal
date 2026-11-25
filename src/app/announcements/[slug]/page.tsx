@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
 import Link from "next/link";
 import {
   getAllAnnouncements,
   getAnnouncementBySlug,
+  getRawEntryBySlug,
 } from "@/lib/contentful";
 import RichTextRenderer from "@/components/RichTextRenderer";
+import AnnouncementDetailLive from "./AnnouncementDetailLive";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -32,12 +35,19 @@ export default async function AnnouncementDetailPage({
 }: {
   params: { slug: string };
 }) {
+  const { isEnabled: preview } = draftMode();
+
+  if (preview) {
+    const rawEntry = await getRawEntryBySlug("announcement", params.slug, true);
+    if (!rawEntry) notFound();
+    return <AnnouncementDetailLive rawEntry={rawEntry} />;
+  }
+
   const announcement = await getAnnouncementBySlug(params.slug);
   if (!announcement) notFound();
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
-      {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-ink-muted">
         <Link href="/announcements" className="hover:text-ink">
           Announcements
@@ -46,7 +56,6 @@ export default async function AnnouncementDetailPage({
         <span className="text-ink">{announcement.title}</span>
       </nav>
 
-      {/* Header */}
       <div className="flex items-center gap-3">
         <time className="text-sm text-ink-muted">
           {new Date(announcement.date).toLocaleDateString("en-US", {
@@ -65,14 +74,12 @@ export default async function AnnouncementDetailPage({
         {announcement.title}
       </h1>
 
-      {/* Body */}
       {announcement.body && (
         <div className="mt-8">
           <RichTextRenderer document={announcement.body} />
         </div>
       )}
 
-      {/* Back link */}
       <div className="mt-12 border-t border-cream-200 pt-6">
         <Link
           href="/announcements"

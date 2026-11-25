@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
 import Link from "next/link";
 import {
   getAllResources,
   getResourceBySlug,
+  getRawEntryBySlug,
 } from "@/lib/contentful";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import TierBadge from "@/components/TierBadge";
+import ResourceDetailLive from "./ResourceDetailLive";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -33,12 +36,21 @@ export default async function ResourceDetailPage({
 }: {
   params: { slug: string };
 }) {
+  const { isEnabled: preview } = draftMode();
+
+  // In draft mode, return the raw entry for live updates
+  if (preview) {
+    const rawEntry = await getRawEntryBySlug("resource", params.slug, true);
+    if (!rawEntry) notFound();
+    return <ResourceDetailLive rawEntry={rawEntry} />;
+  }
+
+  // Published mode — mapped resource
   const resource = await getResourceBySlug(params.slug);
   if (!resource) notFound();
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
-      {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-ink-muted">
         <Link href="/resources" className="hover:text-ink">
           Resources
@@ -47,7 +59,6 @@ export default async function ResourceDetailPage({
         <span className="text-ink">{resource.title}</span>
       </nav>
 
-      {/* Header */}
       <div className="flex items-center gap-3">
         <span className="rounded-md bg-cream-100 px-2 py-0.5 text-xs font-medium text-ink-muted">
           {resource.resourceType}
@@ -65,14 +76,12 @@ export default async function ResourceDetailPage({
         </p>
       )}
 
-      {/* Body */}
       {resource.body && (
         <div className="mt-10 border-t border-cream-200 pt-10">
           <RichTextRenderer document={resource.body} />
         </div>
       )}
 
-      {/* Download link if file exists */}
       {resource.fileUrl && (
         <div className="mt-8">
           <a
@@ -86,7 +95,6 @@ export default async function ResourceDetailPage({
         </div>
       )}
 
-      {/* Back link */}
       <div className="mt-12 border-t border-cream-200 pt-6">
         <Link
           href="/resources"
