@@ -130,28 +130,214 @@ const KNOWLEDGE: {
   },
 ];
 
-const FALLBACK: BotMessage = {
-  from: "bot",
-  html: "I couldn't find a specific answer to that in the partner knowledge base. I can search across your Salesforce Partner Portal data, Contentful resources, and Anthropic documentation. Try asking about referrals, certifications, MDF funding, your deal pipeline, or partner tier requirements.",
-  sources: [],
-  actions: [{ label: "Email partner support", href: "mailto:partners@anthropic.com" }],
-};
+/* ------------------------------------------------------------------ */
+/*  Contentful resource catalog — matches user queries to real content  */
+/* ------------------------------------------------------------------ */
+
+const RESOURCES: {
+  title: string;
+  slug: string;
+  description: string;
+  resourceType: string;
+  keywords: string[];
+}[] = [
+  {
+    title: "Getting Started with the Claude API",
+    slug: "getting-started-claude-api",
+    description: "A comprehensive guide to authenticating, sending your first request, and understanding Claude's response format.",
+    resourceType: "Guide",
+    keywords: ["api", "getting started", "claude api", "authenticate", "request", "response", "sdk"],
+  },
+  {
+    title: "Building a Claude Practice: First 90 Days",
+    slug: "building-claude-practice-first-90-days",
+    description: "A phased roadmap for partners launching a Claude-focused practice within their organization.",
+    resourceType: "Guide",
+    keywords: ["practice", "building", "90 days", "roadmap", "launch", "organization", "partner practice"],
+  },
+  {
+    title: "Delivery Playbook: From Pilot to Production",
+    slug: "delivery-playbook-pilot-to-production",
+    description: "Best practices for running Claude implementation projects from initial pilot through production deployment.",
+    resourceType: "Guide",
+    keywords: ["delivery", "playbook", "pilot", "production", "implementation", "deployment", "project"],
+  },
+  {
+    title: "Co-selling Playbook: Discovery to Close",
+    slug: "co-selling-playbook-discovery-to-close",
+    description: "Step-by-step guidance for joint selling motions with Anthropic, from initial discovery through deal close.",
+    resourceType: "Video",
+    keywords: ["co-selling", "co-sell", "selling", "discovery", "close", "deal", "joint", "sales motion"],
+  },
+  {
+    title: "Enterprise Deployment Reference Architecture",
+    slug: "enterprise-deployment-reference-architecture",
+    description: "Reference architecture patterns for deploying Claude in enterprise environments.",
+    resourceType: "API Documentation",
+    keywords: ["enterprise", "deployment", "architecture", "reference", "infrastructure", "deploy"],
+  },
+  {
+    title: "Campaign in a Box: AI in Financial Services",
+    slug: "campaign-in-a-box-financial-services",
+    description: "Pre-built marketing campaign materials targeting the financial services vertical with Claude use cases.",
+    resourceType: "Case Study",
+    keywords: ["campaign", "financial services", "finance", "banking", "marketing", "vertical"],
+  },
+  {
+    title: "Healthcare Implementation Patterns",
+    slug: "healthcare-implementation-patterns",
+    description: "Implementation patterns and compliance guidance for deploying Claude in healthcare settings.",
+    resourceType: "API Documentation",
+    keywords: ["healthcare", "health", "medical", "compliance", "hipaa", "implementation"],
+  },
+  {
+    title: "Claude Partner Network: Program Overview",
+    slug: "cpn-program-overview",
+    description: "Overview of the Claude Partner Network program including benefits, requirements, and engagement models.",
+    resourceType: "Guide",
+    keywords: ["program", "overview", "partner network", "benefits", "requirements", "cpn"],
+  },
+  {
+    title: "Co-selling with Anthropic: How Referrals Work",
+    slug: "co-selling-how-referrals-work",
+    description: "How the Anthropic partner referral process works from submission to deal close.",
+    resourceType: "Guide",
+    keywords: ["co-selling", "referral", "referrals", "process", "submission"],
+  },
+  {
+    title: "Agent SDK Practice Accelerator",
+    slug: "agent-sdk-practice-accelerator",
+    description: "Accelerator program for partners building practices around Claude's Agent SDK capabilities.",
+    resourceType: "Whitepaper",
+    keywords: ["agent", "sdk", "accelerator", "agent sdk", "agentic", "tools"],
+  },
+  {
+    title: "Partner Portal Access Levels Explained",
+    slug: "portal-access-levels-explained",
+    description: "Explanation of content access tiers within the Claude Partner Network portal.",
+    resourceType: "Guide",
+    keywords: ["access", "levels", "portal", "tiers", "permissions", "gating"],
+  },
+  {
+    title: "Joint Offering Canvas",
+    slug: "joint-offering-canvas",
+    description: "A framework for designing joint solutions combining partner expertise with Claude capabilities.",
+    resourceType: "Guide",
+    keywords: ["joint offering", "canvas", "framework", "solution", "design", "joint solution"],
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Resource matching — scores user query against resource catalog      */
+/* ------------------------------------------------------------------ */
+
+const STOP_WORDS = new Set([
+  "a","an","the","is","are","was","were","be","been","being","have","has","had",
+  "do","does","did","will","would","shall","should","may","might","must","can","could",
+  "i","me","my","we","our","you","your","he","she","it","they","them","their",
+  "this","that","these","those","what","which","who","whom","where","when","how",
+  "not","no","nor","but","or","and","if","then","so","than","too","very","just",
+  "about","tell","show","find","get","give","know","let","make","want","need",
+  "of","in","to","for","with","on","at","from","by","as","into","through","up","out",
+]);
+
+function scoreResource(query: string, resource: typeof RESOURCES[number]): number {
+  const q = query.toLowerCase();
+  const words = q.split(/\s+/).filter((w) => w.length > 1 && !STOP_WORDS.has(w));
+  if (words.length === 0) return 0;
+
+  let score = 0;
+  const titleLow = resource.title.toLowerCase();
+  const descLow = resource.description.toLowerCase();
+
+  // Exact substring match in title is a strong signal
+  if (titleLow.includes(q)) score += 10;
+
+  // Check each query word against title, description, and keywords
+  for (const word of words) {
+    if (titleLow.includes(word)) score += 3;
+    if (descLow.includes(word)) score += 1;
+    if (resource.keywords.some((kw) => kw.includes(word) || word.includes(kw))) score += 2;
+  }
+
+  // Bonus for multi-word phrase matches in title
+  for (let len = Math.min(words.length, 4); len >= 2; len--) {
+    for (let start = 0; start <= words.length - len; start++) {
+      const phrase = words.slice(start, start + len).join(" ");
+      if (titleLow.includes(phrase)) score += len * 2;
+      if (resource.keywords.some((kw) => kw.includes(phrase))) score += len;
+    }
+  }
+
+  return score;
+}
+
+function matchResources(query: string, maxResults = 3): typeof RESOURCES[number][] {
+  const scored = RESOURCES.map((r) => ({ resource: r, score: scoreResource(query, r) }))
+    .filter((s) => s.score >= 3)
+    .sort((a, b) => b.score - a.score);
+  return scored.slice(0, maxResults).map((s) => s.resource);
+}
+
+function buildResourceCards(resources: typeof RESOURCES[number][]): string {
+  if (resources.length === 0) return "";
+  const cards = resources
+    .map(
+      (r) =>
+        `<a href="/resources/${r.slug}" style="display:block;text-decoration:none;color:inherit;border:1px solid #E8E1D5;border-radius:8px;padding:10px 12px;margin-top:6px;background:#fff;transition:border-color 0.15s" onmouseover="this.style.borderColor='#C4704B'" onmouseout="this.style.borderColor='#E8E1D5'">` +
+        `<div style="font-weight:600;font-size:13px;color:#191919">${r.title}</div>` +
+        `<div style="font-size:11px;color:#70695E;margin-top:2px">${r.resourceType} · ${r.description.slice(0, 80)}${r.description.length > 80 ? "…" : ""}</div>` +
+        `</a>`
+    )
+    .join("");
+  return `<div style="margin-top:8px"><div style="font-size:11px;font-weight:600;color:#70695E;margin-bottom:4px">Related resources from Contentful CMS:</div>${cards}</div>`;
+}
 
 /* ------------------------------------------------------------------ */
 /*  Match logic                                                        */
 /* ------------------------------------------------------------------ */
 
+const FALLBACK_HTML =
+  "I couldn't find a specific answer to that in the partner knowledge base. I can search across your Salesforce Partner Portal data, Contentful resources, and Anthropic documentation. Try asking about referrals, certifications, MDF funding, your deal pipeline, or partner tier requirements.";
+
 function findAnswer(query: string): BotMessage {
   const q = query.toLowerCase();
-  const match = KNOWLEDGE.find((k) =>
+  const knowledgeMatch = KNOWLEDGE.find((k) =>
     k.triggers.some((t) => q.includes(t))
   );
-  if (!match) return FALLBACK;
+
+  const matchedResources = matchResources(query);
+  const resourceHtml = buildResourceCards(matchedResources);
+  const resourceSources: Source[] =
+    matchedResources.length > 0
+      ? [{ label: "Resource Library", system: "contentful" }]
+      : [];
+
+  if (knowledgeMatch) {
+    return {
+      from: "bot",
+      html: knowledgeMatch.answer + resourceHtml,
+      sources: [...knowledgeMatch.sources, ...resourceSources],
+      actions: knowledgeMatch.actions,
+    };
+  }
+
+  if (matchedResources.length > 0) {
+    return {
+      from: "bot",
+      html:
+        `I found ${matchedResources.length === 1 ? "a resource" : "some resources"} that may help:` +
+        resourceHtml,
+      sources: resourceSources,
+      actions: [{ label: "Browse all resources", href: "/resources" }],
+    };
+  }
+
   return {
     from: "bot",
-    html: match.answer,
-    sources: match.sources,
-    actions: match.actions,
+    html: FALLBACK_HTML,
+    sources: [],
+    actions: [{ label: "Email partner support", href: "mailto:partners@anthropic.com" }],
   };
 }
 
