@@ -1,15 +1,38 @@
 import Link from "next/link";
-import { getFeaturedPartners, getFeaturedAnnouncements } from "@/lib/contentful";
+import {
+  getHomepage,
+  getFeaturedPartners,
+  getFeaturedAnnouncements,
+} from "@/lib/contentful";
 import PartnerCard from "@/components/PartnerCard";
 import AnthropicLogo from "@/components/AnthropicLogo";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [partners, announcements] = await Promise.all([
+  const [homepage, partners, announcements] = await Promise.all([
+    getHomepage(),
     getFeaturedPartners(),
     getFeaturedAnnouncements(2),
   ]);
+
+  // Fallbacks in case the homepage entry is missing
+  const heroHeadline = homepage?.heroHeadline ?? "Claude Partner Hub";
+  const heroSubtitle =
+    homepage?.heroSubtitle ??
+    "Resources, enablement, and everything you need to build and sell with Claude — from the Claude Partner Network.";
+  const primaryCtaText = homepage?.primaryCtaText ?? "Explore partners";
+  const primaryCtaLink = homepage?.primaryCtaLink ?? "/partners";
+  const secondaryCtaText = homepage?.secondaryCtaText ?? "Browse resources";
+  const secondaryCtaLink = homepage?.secondaryCtaLink ?? "/resources";
+  const partnersHeading = homepage?.partnersHeading ?? "Featured partners";
+  const partnersDescription =
+    homepage?.partnersDescription ??
+    "Leading organizations in the Claude Partner Network";
+  const newsHeading = homepage?.newsHeading ?? "Latest news";
+  const newsDescription =
+    homepage?.newsDescription ??
+    "Announcements and updates from the Claude Partner Network";
 
   return (
     <>
@@ -18,24 +41,23 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
           <AnthropicLogo className="mb-8 h-8 w-8 text-ink" />
           <h1 className="max-w-3xl font-serif text-4xl font-semibold leading-tight text-ink sm:text-5xl">
-            Claude Partner Hub
+            {heroHeadline}
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-muted">
-            Resources, enablement, and everything you need to build and
-            sell with Claude — from the Claude Partner Network.
+            {heroSubtitle}
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
-              href="/partners"
+              href={primaryCtaLink}
               className="rounded-md bg-ink px-5 py-2.5 text-sm font-medium text-cream-50 transition-colors hover:bg-ink-light"
             >
-              Explore partners
+              {primaryCtaText}
             </Link>
             <Link
-              href="/resources"
+              href={secondaryCtaLink}
               className="rounded-md border border-cream-200 bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-cream-300 hover:bg-cream-50"
             >
-              Browse resources
+              {secondaryCtaText}
             </Link>
           </div>
         </div>
@@ -47,10 +69,10 @@ export default async function HomePage() {
           <div className="flex items-end justify-between">
             <div>
               <h2 className="font-serif text-2xl font-semibold text-ink">
-                Featured partners
+                {partnersHeading}
               </h2>
               <p className="mt-2 text-ink-muted">
-                Leading organizations in the Claude Partner Network
+                {partnersDescription}
               </p>
             </div>
             <Link
@@ -75,10 +97,10 @@ export default async function HomePage() {
             <div className="flex items-end justify-between">
               <div>
                 <h2 className="font-serif text-2xl font-semibold text-ink">
-                  Latest news
+                  {newsHeading}
                 </h2>
                 <p className="mt-2 text-ink-muted">
-                  Announcements and updates from the Claude Partner Network
+                  {newsDescription}
                 </p>
               </div>
               <Link

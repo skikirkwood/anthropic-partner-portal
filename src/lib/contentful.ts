@@ -117,6 +117,20 @@ export interface Page {
   body?: Document;
 }
 
+export interface Homepage {
+  id: string;
+  heroHeadline: string;
+  heroSubtitle?: string;
+  primaryCtaText?: string;
+  primaryCtaLink?: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
+  partnersHeading?: string;
+  partnersDescription?: string;
+  newsHeading?: string;
+  newsDescription?: string;
+}
+
 // ---------------------------------------------------------------------------
 // Mappers
 // ---------------------------------------------------------------------------
@@ -177,6 +191,23 @@ function mapPage(item: any): Page {
     title: f.title ?? "",
     slug: f.slug ?? "",
     body: f.body,
+  };
+}
+
+function mapHomepage(item: any): Homepage {
+  const f = item.fields;
+  return {
+    id: item.sys.id,
+    heroHeadline: f.heroHeadline ?? "",
+    heroSubtitle: f.heroSubtitle,
+    primaryCtaText: f.primaryCtaText,
+    primaryCtaLink: f.primaryCtaLink,
+    secondaryCtaText: f.secondaryCtaText,
+    secondaryCtaLink: f.secondaryCtaLink,
+    partnersHeading: f.partnersHeading,
+    partnersDescription: f.partnersDescription,
+    newsHeading: f.newsHeading,
+    newsDescription: f.newsDescription,
   };
 }
 
@@ -326,4 +357,13 @@ export async function getPageBySlug(
     include: 2,
   });
   return res.items.length > 0 ? mapPage(res.items[0]) : null;
+}
+
+export async function getHomepage(preview = false): Promise<Homepage | null> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
+    content_type: "homepage",
+    limit: 1,
+  });
+  return res.items.length > 0 ? mapHomepage(res.items[0]) : null;
 }
