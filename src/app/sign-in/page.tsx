@@ -97,11 +97,15 @@ function SignInForm() {
         <div className="mt-2 space-y-1 text-xs text-ink-muted">
           <p>
             <span className="font-medium text-ink">demo@anthropic.com</span>{" "}
-            / demo123
+            / demo123 <span className="text-violet-600">(Platinum)</span>
           </p>
           <p>
             <span className="font-medium text-ink">partner@deloitte.com</span>{" "}
-            / deloitte123
+            / deloitte123 <span className="text-violet-600">(Platinum)</span>
+          </p>
+          <p>
+            <span className="font-medium text-ink">partner@slalom.com</span>{" "}
+            / slalom123 <span className="text-slate-500">(Silver)</span>
           </p>
         </div>
       </div>
