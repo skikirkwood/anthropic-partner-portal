@@ -1,4 +1,5 @@
 import { getAllResources } from "@/lib/contentful";
+import { getLocale } from "@/lib/locale";
 import ResourcesClient from "./ResourcesClient";
 import type { Metadata } from "next";
 
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function ResourcesPage() {
-  const resources = await getAllResources();
+  const locale = getLocale();
+  const resources = await getAllResources(false, locale);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">

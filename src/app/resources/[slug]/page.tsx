@@ -6,6 +6,7 @@ import {
   getResourceBySlug,
   getRawEntryBySlug,
 } from "@/lib/contentful";
+import { getLocale } from "@/lib/locale";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import TierBadge from "@/components/TierBadge";
 import ResourceDetailLive from "./ResourceDetailLive";
@@ -37,16 +38,17 @@ export default async function ResourceDetailPage({
   params: { slug: string };
 }) {
   const { isEnabled: preview } = draftMode();
+  const locale = getLocale();
 
   // In draft mode, return the raw entry for live updates
   if (preview) {
-    const rawEntry = await getRawEntryBySlug("resource", params.slug, true);
+    const rawEntry = await getRawEntryBySlug("resource", params.slug, true, locale);
     if (!rawEntry) notFound();
     return <ResourceDetailLive rawEntry={rawEntry} />;
   }
 
   // Published mode — mapped resource
-  const resource = await getResourceBySlug(params.slug);
+  const resource = await getResourceBySlug(params.slug, preview, locale);
   if (!resource) notFound();
 
   return (

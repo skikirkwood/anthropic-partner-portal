@@ -230,7 +230,8 @@ function mapHomepage(item: any): Homepage {
 export async function getRawEntryBySlug(
   contentType: string,
   slug: string,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<any | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
@@ -238,18 +239,21 @@ export async function getRawEntryBySlug(
     "fields.slug": slug,
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items[0] ?? null;
 }
 
 export async function getRawHomepageEntry(
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<any | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "homepage",
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items[0] ?? null;
 }
@@ -258,30 +262,33 @@ export async function getRawHomepageEntry(
 // Fetch helpers (all accept preview flag for Draft Mode)
 // ---------------------------------------------------------------------------
 
-export async function getAllPartners(preview = false): Promise<Partner[]> {
+export async function getAllPartners(preview = false, locale?: string): Promise<Partner[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "partner",
     order: ["fields.name"],
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.map(mapPartner);
 }
 
-export async function getFeaturedPartners(preview = false): Promise<Partner[]> {
+export async function getFeaturedPartners(preview = false, locale?: string): Promise<Partner[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "partner",
     "fields.featured": true,
     order: ["fields.name"],
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.map(mapPartner);
 }
 
 export async function getPartnerBySlug(
   slug: string,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<Partner | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
@@ -289,36 +296,41 @@ export async function getPartnerBySlug(
     "fields.slug": slug,
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.length > 0 ? mapPartner(res.items[0]) : null;
 }
 
-export async function getAllResources(preview = false): Promise<Resource[]> {
+export async function getAllResources(preview = false, locale?: string): Promise<Resource[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "resource",
     order: ["fields.title"],
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.map(mapResource);
 }
 
 export async function getResourcesByPartner(
   partnerId: string,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<Resource[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "resource",
     "fields.relatedPartner.sys.id": partnerId,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.map(mapResource);
 }
 
 export async function getResourceBySlug(
   slug: string,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<Resource | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
@@ -326,23 +338,26 @@ export async function getResourceBySlug(
     "fields.slug": slug,
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.length > 0 ? mapResource(res.items[0]) : null;
 }
 
-export async function getAllAnnouncements(preview = false): Promise<Announcement[]> {
+export async function getAllAnnouncements(preview = false, locale?: string): Promise<Announcement[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "announcement",
     order: ["-fields.date"],
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.map(mapAnnouncement);
 }
 
 export async function getFeaturedAnnouncements(
   limit: number = 2,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<Announcement[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
@@ -351,13 +366,15 @@ export async function getFeaturedAnnouncements(
     order: ["-fields.date"],
     limit,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.map(mapAnnouncement);
 }
 
 export async function getAnnouncementBySlug(
   slug: string,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<Announcement | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
@@ -365,13 +382,15 @@ export async function getAnnouncementBySlug(
     "fields.slug": slug,
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.length > 0 ? mapAnnouncement(res.items[0]) : null;
 }
 
 export async function getPageBySlug(
   slug: string,
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<Page | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
@@ -379,16 +398,18 @@ export async function getPageBySlug(
     "fields.slug": slug,
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.length > 0 ? mapPage(res.items[0]) : null;
 }
 
-export async function getHomepage(preview = false): Promise<Homepage | null> {
+export async function getHomepage(preview = false, locale?: string): Promise<Homepage | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "homepage",
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.length > 0 ? mapHomepage(res.items[0]) : null;
 }
@@ -461,25 +482,29 @@ function mapAboutPage(item: any): AboutPage {
 }
 
 export async function getAboutPage(
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<AboutPage | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "aboutPage",
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items.length > 0 ? mapAboutPage(res.items[0]) : null;
 }
 
 export async function getRawAboutPageEntry(
-  preview = false
+  preview = false,
+  locale?: string
 ): Promise<any | null> {
   const c = getClient(preview);
   const res = await c.getEntries({
     content_type: "aboutPage",
     limit: 1,
     include: 2,
+    ...(locale ? { locale } : {}),
   });
   return res.items[0] ?? null;
 }

@@ -6,6 +6,7 @@ import {
   getAnnouncementBySlug,
   getRawEntryBySlug,
 } from "@/lib/contentful";
+import { getLocale } from "@/lib/locale";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import AnnouncementDetailLive from "./AnnouncementDetailLive";
 import type { Metadata } from "next";
@@ -36,14 +37,15 @@ export default async function AnnouncementDetailPage({
   params: { slug: string };
 }) {
   const { isEnabled: preview } = draftMode();
+  const locale = getLocale();
 
   if (preview) {
-    const rawEntry = await getRawEntryBySlug("announcement", params.slug, true);
+    const rawEntry = await getRawEntryBySlug("announcement", params.slug, true, locale);
     if (!rawEntry) notFound();
     return <AnnouncementDetailLive rawEntry={rawEntry} />;
   }
 
-  const announcement = await getAnnouncementBySlug(params.slug);
+  const announcement = await getAnnouncementBySlug(params.slug, preview, locale);
   if (!announcement) notFound();
 
   return (

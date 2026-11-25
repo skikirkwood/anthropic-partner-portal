@@ -7,6 +7,7 @@ import {
   getResourcesByPartner,
   getRawEntryBySlug,
 } from "@/lib/contentful";
+import { getLocale } from "@/lib/locale";
 import TierBadge from "@/components/TierBadge";
 import PartnerDetailLive from "./PartnerDetailLive";
 import type { Metadata } from "next";
@@ -37,22 +38,23 @@ export default async function PartnerDetailPage({
   params: { slug: string };
 }) {
   const { isEnabled: preview } = draftMode();
+  const locale = getLocale();
 
   if (preview) {
-    const rawEntry = await getRawEntryBySlug("partner", params.slug, true);
+    const rawEntry = await getRawEntryBySlug("partner", params.slug, true, locale);
     if (!rawEntry) notFound();
     // Still fetch resources with preview for the related section
-    const partner = await getPartnerBySlug(params.slug, true);
+    const partner = await getPartnerBySlug(params.slug, true, locale);
     const resources = partner
-      ? await getResourcesByPartner(partner.id, true)
+      ? await getResourcesByPartner(partner.id, true, locale)
       : [];
     return <PartnerDetailLive rawEntry={rawEntry} resources={resources} />;
   }
 
-  const partner = await getPartnerBySlug(params.slug);
+  const partner = await getPartnerBySlug(params.slug, preview, locale);
   if (!partner) notFound();
 
-  const resources = await getResourcesByPartner(partner.id);
+  const resources = await getResourcesByPartner(partner.id, preview, locale);
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">

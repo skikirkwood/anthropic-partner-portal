@@ -9,6 +9,7 @@ import {
   type AboutPageStat,
   type AboutPageMilestone,
 } from "@/lib/contentful";
+import { getLocale } from "@/lib/locale";
 import AboutPageLive from "./AboutPageLive";
 
 export const revalidate = 60;
@@ -21,15 +22,16 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const { isEnabled: preview } = draftMode();
+  const locale = getLocale();
 
   if (preview) {
-    const rawEntry = await getRawAboutPageEntry(true);
+    const rawEntry = await getRawAboutPageEntry(true, locale);
     if (rawEntry) {
       return <AboutPageLive rawEntry={rawEntry} />;
     }
   }
 
-  const about = await getAboutPage(preview);
+  const about = await getAboutPage(preview, locale);
 
   // Fallbacks
   const heroLabel = about?.heroLabel ?? "About the Partner Network";
