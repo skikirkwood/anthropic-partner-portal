@@ -218,6 +218,7 @@ export async function getFeaturedPartners(preview = false): Promise<Partner[]> {
   const res = await c.getEntries({
     content_type: "partner",
     "fields.featured": true,
+    order: ["fields.name"],
     include: 2,
   });
   return res.items.map(mapPartner);
