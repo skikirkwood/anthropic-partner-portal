@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="flex items-center gap-2">
               <AnthropicLogo className="h-4 w-4 text-ink" />
               <span className="text-sm font-medium text-ink">
-                Claude Partner Hub
+                Claude Partner Network
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-ink-muted">

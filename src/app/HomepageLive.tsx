@@ -24,7 +24,7 @@ export default function HomepageLive({
   });
   const f = entry.fields;
 
-  const heroHeadline = f.heroHeadline ?? "Claude Partner Hub";
+  const heroHeadline = f.heroHeadline ?? "Claude Partner Network";
   const heroSubtitle =
     f.heroSubtitle ??
     "Resources, enablement, and everything you need to build and sell with Claude — from the Claude Partner Network.";

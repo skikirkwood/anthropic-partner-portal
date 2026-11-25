@@ -5,7 +5,7 @@ import PartnerDirectoryClient from "./PartnerDirectoryClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Partner Directory | Claude Partner Hub",
+  title: "Partner Directory | Claude Partner Network",
 };
 
 export const revalidate = 60;

@@ -15,7 +15,7 @@ import AboutPageLive from "./AboutPageLive";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "About | Claude Partner Hub",
+  title: "About | Claude Partner Network",
   description:
     "The mission, values, and story behind the Claude Partner Network.",
 };

@@ -16,7 +16,7 @@ const serif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "Claude Partner Hub",
+  title: "Claude Partner Network",
   description:
     "The Claude Partner Network — resources, enablement, and everything you need to build and sell with Claude.",
 };

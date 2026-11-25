@@ -26,7 +26,7 @@ export async function generateMetadata({
   const announcement = await getAnnouncementBySlug(params.slug);
   return {
     title: announcement
-      ? `${announcement.title} | Claude Partner Hub`
+      ? `${announcement.title} | Claude Partner Network`
       : "Announcement Not Found",
   };
 }

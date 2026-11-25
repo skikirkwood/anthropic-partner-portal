@@ -30,7 +30,7 @@ export async function generateMetadata({
   const resource = await getResourceBySlug(params.slug);
   return {
     title: resource
-      ? `${resource.title} | Claude Partner Hub`
+      ? `${resource.title} | Claude Partner Network`
       : "Resource Not Found",
   };
 }

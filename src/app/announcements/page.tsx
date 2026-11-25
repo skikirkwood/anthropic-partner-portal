@@ -5,7 +5,7 @@ import DataSourceBadge from "@/components/DataSourceBadge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Announcements | Claude Partner Hub",
+  title: "Announcements | Claude Partner Network",
 };
 
 export const revalidate = 60;

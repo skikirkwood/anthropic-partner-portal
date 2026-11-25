@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import AnthropicLogo from "./AnthropicLogo";
+
 
 const navLinks = [
   { href: "/about", label: "About" },
@@ -89,10 +89,18 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-cream-200 bg-cream-100/95 backdrop-blur supports-[backdrop-filter]:bg-cream-100/80">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2.5">
-          <AnthropicLogo className="h-5 w-5 text-ink" />
-          <span className="text-sm font-medium tracking-tight text-ink">
-            Claude Partner Hub
+        <Link href="/" className="flex items-center gap-2">
+          {/* Starburst icon */}
+          <svg viewBox="0 0 32 32" className="h-6 w-6 text-tawny" fill="currentColor" aria-hidden="true">
+            <g transform="translate(16,16)">
+              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
+                <line key={deg} x1="0" y1="0" x2="0" y2="-14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" transform={`rotate(${deg})`} />
+              ))}
+            </g>
+            <circle cx="16" cy="16" r="3" />
+          </svg>
+          <span className="font-serif text-lg font-semibold tracking-tight text-ink">
+            Claude Partner Network
           </span>
         </Link>
 

@@ -5,7 +5,7 @@ import ResourcesClient from "./ResourcesClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Resources | Claude Partner Hub",
+  title: "Resources | Claude Partner Network",
 };
 
 export const revalidate = 60;

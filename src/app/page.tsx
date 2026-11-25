@@ -38,7 +38,7 @@ export default async function HomePage() {
   const homepage = await getHomepage(preview, locale);
 
   // Fallbacks in case the homepage entry is missing
-  const heroHeadline = homepage?.heroHeadline ?? "Claude Partner Hub";
+  const heroHeadline = homepage?.heroHeadline ?? "Claude Partner Network";
   const heroSubtitle =
     homepage?.heroSubtitle ??
     "Resources, enablement, and everything you need to build and sell with Claude — from the Claude Partner Network.";

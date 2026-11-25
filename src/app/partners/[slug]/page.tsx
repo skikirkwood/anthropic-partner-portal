@@ -28,7 +28,7 @@ export async function generateMetadata({
   const partner = await getPartnerBySlug(params.slug);
   return {
     title: partner
-      ? `${partner.name} | Claude Partner Hub`
+      ? `${partner.name} | Claude Partner Network`
       : "Partner Not Found",
   };
 }
