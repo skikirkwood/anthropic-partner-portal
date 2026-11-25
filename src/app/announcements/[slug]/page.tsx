@@ -22,7 +22,7 @@ export async function generateMetadata({
   const announcement = await getAnnouncementBySlug(params.slug);
   return {
     title: announcement
-      ? `${announcement.title} | Anthropic Partner Portal`
+      ? `${announcement.title} | Claude Partner Hub`
       : "Announcement Not Found",
   };
 }

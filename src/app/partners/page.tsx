@@ -3,7 +3,7 @@ import PartnerDirectoryClient from "./PartnerDirectoryClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Partner Directory | Anthropic Partner Portal",
+  title: "Partner Directory | Claude Partner Hub",
 };
 
 export const revalidate = 60;

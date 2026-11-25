@@ -21,7 +21,7 @@ export default function Header() {
             <AnthropicLogo className="h-4 w-4 text-white" />
           </div>
           <span className="text-lg font-semibold text-charcoal">
-            Partner Portal
+            Claude Partner Hub
           </span>
         </Link>
 

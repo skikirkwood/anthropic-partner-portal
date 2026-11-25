@@ -3,7 +3,7 @@ import { getAllAnnouncements } from "@/lib/contentful";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Announcements | Anthropic Partner Portal",
+  title: "Announcements | Claude Partner Hub",
 };
 
 export const revalidate = 60;

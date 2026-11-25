@@ -11,12 +11,12 @@ export default function Footer() {
                 <span className="text-xs font-bold text-white">A</span>
               </div>
               <span className="font-semibold text-charcoal">
-                Anthropic Partners
+                Claude Partner Hub
               </span>
             </div>
             <p className="mt-3 text-sm text-charcoal-muted">
-              Building safe, reliable AI together with our global partner
-              ecosystem.
+              The Claude Partner Network &mdash; building safe, reliable AI
+              together with our global partner ecosystem.
             </p>
           </div>
           <div>

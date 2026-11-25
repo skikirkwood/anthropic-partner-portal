@@ -25,11 +25,11 @@ export default async function HomePage() {
             <AnthropicLogo className="h-7 w-7 text-white" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Anthropic Partner Portal
+            Claude Partner Hub
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-white/70">
-            Your central hub for partner resources, technical documentation, and
-            the latest from Anthropic&apos;s partner ecosystem.
+            Your central hub for the Claude Partner Network &mdash; resources,
+            enablement, and everything you need to build and sell with Claude.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
@@ -57,7 +57,7 @@ export default async function HomePage() {
                 Featured Partners
               </h2>
               <p className="mt-1 text-charcoal-muted">
-                Leading organizations in the Anthropic partner ecosystem
+                Leading organizations in the Claude Partner Network
               </p>
             </div>
             <Link
@@ -85,7 +85,7 @@ export default async function HomePage() {
                   Latest News
                 </h2>
                 <p className="mt-1 text-charcoal-muted">
-                  Announcements and updates for our partner community
+                  Announcements and updates from the Claude Partner Network
                 </p>
               </div>
               <Link

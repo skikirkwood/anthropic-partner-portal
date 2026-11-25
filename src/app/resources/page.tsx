@@ -3,7 +3,7 @@ import ResourcesClient from "./ResourcesClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Resources | Anthropic Partner Portal",
+  title: "Resources | Claude Partner Hub",
 };
 
 export const revalidate = 60;

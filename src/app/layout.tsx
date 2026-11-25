@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Anthropic Partner Portal",
+  title: "Claude Partner Hub",
   description:
-    "The central hub for Anthropic's partner ecosystem — resources, news, and collaboration.",
+    "The Claude Partner Network — resources, enablement, and everything you need to build and sell with Claude.",
 };
 
 export default function RootLayout({
