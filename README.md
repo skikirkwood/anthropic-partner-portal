@@ -10,6 +10,7 @@ A Next.js 14 (App Router) partner portal for the Anthropic partner ecosystem, po
 - **Live Preview & Inspector Mode** — editors see changes in real time via Contentful's Draft Mode integration
 - **Localization** — cookie-based locale switcher (English, French-Canadian, German) with server-side rendering in the selected language
 - **Authentication** — NextAuth.js (Auth.js v5) with Credentials provider and route-level protection
+- **Claude Partner Assistant** — AI chat widget that surfaces answers from Salesforce Partner Portal, Contentful CMS, and Anthropic Docs with source citations
 - **Custom design system** — Tailwind CSS with custom color tokens (cream, ink, tawny) inspired by anthropic.com
 
 ## Getting Started
@@ -102,6 +103,8 @@ src/
     RichTextRenderer.tsx        # Renders Contentful rich text documents
     SessionWrapper.tsx          # NextAuth SessionProvider for client components
     TierBadge.tsx               # Colored tier label (Platinum/Gold/Silver)
+    ClaudeAssistant.tsx         # AI chat widget — floating launcher + chat panel
+    DataSourceBadge.tsx         # Visual pill showing data source (Salesforce/Contentful)
     UpgradeModal.tsx            # Shown when user tier < resource minimumTier
   lib/
     contentful.ts               # Contentful CDA/CPA clients + 15 fetch functions
@@ -122,6 +125,10 @@ When Draft Mode is enabled via `/api/draft`, pages switch from the Content Deliv
 ### Tier-based content gating
 
 The resource detail page calls `auth()` to get the current session, derives the user's partner tier from their email domain via `tiers.ts`, and compares it to the resource's `minimumTier` field. If the user's tier is insufficient, the page renders an `UpgradeModal` instead of the resource content. The resource listing page is ungated — all users see every card.
+
+### Claude Partner Assistant
+
+A floating chat widget (bottom-right corner of every page) demonstrates how an AI assistant can surface information from multiple backend systems in a single conversational interface. The assistant retrieves answers from Salesforce Partner Portal (deal pipeline, referrals, MDF balances), Contentful CMS (resources, announcements, program guides), and Anthropic documentation (API docs, certification exams). Each response includes color-coded source citations showing which system provided the data.
 
 ### Static generation with ISR
 
