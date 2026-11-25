@@ -205,22 +205,23 @@ export default function ClaudeAssistant() {
     if (open && inputRef.current) inputRef.current.focus();
   }, [open]);
 
-  function handleSend(e?: React.FormEvent) {
-    e?.preventDefault();
-    const q = input.trim();
-    if (!q) return;
-
+  function sendQuestion(q: string) {
+    if (!q || typing) return;
     const userMsg: UserMessage = { from: "user", text: q };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setTyping(true);
 
-    // Simulate a brief "thinking" delay
     setTimeout(() => {
       const reply = findAnswer(q);
       setMessages((prev) => [...prev, reply]);
       setTyping(false);
     }, 800 + Math.random() * 600);
+  }
+
+  function handleSend(e?: React.FormEvent) {
+    e?.preventDefault();
+    sendQuestion(input.trim());
   }
 
   return (
@@ -318,6 +319,32 @@ export default function ClaudeAssistant() {
                   </div>
                 </div>
               )
+            )}
+
+            {/* Suggested questions — only show when just the greeting is visible */}
+            {messages.length === 1 && !typing && (
+              <div className="flex flex-wrap gap-2 px-1">
+                {[
+                  "How do I submit a referral?",
+                  "What are the tier requirements?",
+                  "What certifications are available?",
+                  "What's my MDF balance?",
+                  "Where are the API docs?",
+                  "Show my deal pipeline",
+                  "How do I get support?",
+                  "Any new announcements?",
+                  "What's the partner pricing?",
+                  "Who is my channel manager?",
+                ].map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => sendQuestion(q)}
+                    className="rounded-full border border-cream-200 bg-white px-3 py-1.5 text-xs text-ink-muted hover:border-tawny hover:text-tawny transition-colors"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
             )}
 
             {/* Typing indicator */}
