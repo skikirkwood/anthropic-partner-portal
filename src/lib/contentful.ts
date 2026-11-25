@@ -378,3 +378,96 @@ export async function getHomepage(preview = false): Promise<Homepage | null> {
   });
   return res.items.length > 0 ? mapHomepage(res.items[0]) : null;
 }
+
+// ---------------------------------------------------------------------------
+// About Page
+// ---------------------------------------------------------------------------
+
+export interface AboutPageValue {
+  title: string;
+  description: string;
+}
+
+export interface AboutPageStat {
+  value: string;
+  label: string;
+}
+
+export interface AboutPageMilestone {
+  year: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutPage {
+  id: string;
+  heroLabel?: string;
+  heroHeadline: string;
+  heroDescription?: string;
+  missionHeading?: string;
+  missionBody?: string;
+  missionQuote?: string;
+  missionQuoteAttribution?: string;
+  valuesHeading?: string;
+  valuesDescription?: string;
+  values: AboutPageValue[];
+  stats: AboutPageStat[];
+  milestonesHeading?: string;
+  milestonesDescription?: string;
+  milestones: AboutPageMilestone[];
+  ctaHeading?: string;
+  ctaDescription?: string;
+  ctaPrimaryText?: string;
+  ctaPrimaryLink?: string;
+  ctaSecondaryText?: string;
+  ctaSecondaryLink?: string;
+}
+
+function mapAboutPage(item: any): AboutPage {
+  const f = item.fields;
+  return {
+    id: item.sys.id,
+    heroLabel: f.heroLabel,
+    heroHeadline: f.heroHeadline ?? "",
+    heroDescription: f.heroDescription,
+    missionHeading: f.missionHeading,
+    missionBody: f.missionBody,
+    missionQuote: f.missionQuote,
+    missionQuoteAttribution: f.missionQuoteAttribution,
+    valuesHeading: f.valuesHeading,
+    valuesDescription: f.valuesDescription,
+    values: Array.isArray(f.values) ? f.values : [],
+    stats: Array.isArray(f.stats) ? f.stats : [],
+    milestonesHeading: f.milestonesHeading,
+    milestonesDescription: f.milestonesDescription,
+    milestones: Array.isArray(f.milestones) ? f.milestones : [],
+    ctaHeading: f.ctaHeading,
+    ctaDescription: f.ctaDescription,
+    ctaPrimaryText: f.ctaPrimaryText,
+    ctaPrimaryLink: f.ctaPrimaryLink,
+    ctaSecondaryText: f.ctaSecondaryText,
+    ctaSecondaryLink: f.ctaSecondaryLink,
+  };
+}
+
+export async function getAboutPage(
+  preview = false
+): Promise<AboutPage | null> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
+    content_type: "aboutPage",
+    limit: 1,
+  });
+  return res.items.length > 0 ? mapAboutPage(res.items[0]) : null;
+}
+
+export async function getRawAboutPageEntry(
+  preview = false
+): Promise<any | null> {
+  const c = getClient(preview);
+  const res = await c.getEntries({
+    content_type: "aboutPage",
+    limit: 1,
+  });
+  return res.items[0] ?? null;
+}

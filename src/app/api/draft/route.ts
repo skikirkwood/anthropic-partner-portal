@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
     announcement: `/announcements/${slug}`,
     page: `/${slug}`,
     homepage: `/`,
+    aboutPage: `/about`,
   };
 
   const path = contentType && pathMap[contentType] ? pathMap[contentType] : "/";
