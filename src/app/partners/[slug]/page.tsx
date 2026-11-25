@@ -39,14 +39,14 @@ export default async function PartnerDetailPage({
   const resources = await getResourcesByPartner(partner.id);
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
+    <div className="mx-auto max-w-4xl px-6 py-16">
       {/* Breadcrumb */}
-      <nav className="mb-8 text-sm text-charcoal-muted">
-        <Link href="/partners" className="hover:text-charcoal">
+      <nav className="mb-8 text-sm text-ink-muted">
+        <Link href="/partners" className="hover:text-ink">
           Partners
         </Link>
         <span className="mx-2">/</span>
-        <span className="text-charcoal">{partner.name}</span>
+        <span className="text-ink">{partner.name}</span>
       </nav>
 
       {/* Header */}
@@ -55,16 +55,16 @@ export default async function PartnerDetailPage({
           <img
             src={partner.logoUrl}
             alt={`${partner.name} logo`}
-            className="h-16 w-16 rounded-xl object-contain"
+            className="h-16 w-16 rounded-lg object-contain"
           />
         ) : (
-          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-sand-200 text-2xl font-bold text-charcoal">
+          <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-cream-200 text-2xl font-semibold text-ink">
             {partner.name.charAt(0)}
           </div>
         )}
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-charcoal">
+            <h1 className="font-serif text-3xl font-semibold text-ink">
               {partner.name}
             </h1>
             <TierBadge tier={partner.tier} />
@@ -74,7 +74,7 @@ export default async function PartnerDetailPage({
               href={partner.websiteUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 inline-block text-sm text-amber-700 hover:text-amber-800"
+              className="mt-1 inline-block text-sm text-tawny hover:text-tawny-hover"
             >
               {partner.websiteUrl.replace(/^https?:\/\/(www\.)?/, "")} &nearr;
             </a>
@@ -84,11 +84,11 @@ export default async function PartnerDetailPage({
 
       {/* Summary */}
       {partner.summary && (
-        <div className="mt-8 rounded-xl border border-sand-200 bg-white p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-charcoal-muted">
+        <div className="mt-8 rounded-lg border border-cream-200 bg-white p-6">
+          <h2 className="text-sm font-medium text-ink-muted">
             About
           </h2>
-          <p className="mt-3 leading-relaxed text-charcoal-light">
+          <p className="mt-3 leading-relaxed text-ink-light">
             {partner.summary}
           </p>
         </div>
@@ -96,15 +96,15 @@ export default async function PartnerDetailPage({
 
       {/* Capabilities */}
       {partner.capabilities.length > 0 && (
-        <div className="mt-6 rounded-xl border border-sand-200 bg-white p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-charcoal-muted">
+        <div className="mt-6 rounded-lg border border-cream-200 bg-white p-6">
+          <h2 className="text-sm font-medium text-ink-muted">
             Capabilities
           </h2>
           <div className="mt-3 flex flex-wrap gap-2">
             {partner.capabilities.map((cap) => (
               <span
                 key={cap}
-                className="rounded-lg bg-sand-100 px-3 py-1.5 text-sm text-charcoal"
+                className="rounded-lg bg-cream-100 px-3 py-1.5 text-sm text-ink"
               >
                 {cap}
               </span>
@@ -115,13 +115,13 @@ export default async function PartnerDetailPage({
 
       {/* Contact */}
       {partner.contactEmail && (
-        <div className="mt-6 rounded-xl border border-sand-200 bg-white p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-charcoal-muted">
+        <div className="mt-6 rounded-lg border border-cream-200 bg-white p-6">
+          <h2 className="text-sm font-medium text-ink-muted">
             Contact
           </h2>
           <a
             href={`mailto:${partner.contactEmail}`}
-            className="mt-3 inline-block text-amber-700 hover:text-amber-800"
+            className="mt-3 inline-block text-tawny hover:text-tawny-hover"
           >
             {partner.contactEmail}
           </a>
@@ -131,25 +131,25 @@ export default async function PartnerDetailPage({
       {/* Related Resources */}
       {resources.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-xl font-bold text-charcoal">
+          <h2 className="font-serif text-xl font-semibold text-ink">
             Related Resources
           </h2>
           <div className="mt-4 grid gap-4">
             {resources.map((r) => (
               <div
                 key={r.id}
-                className="rounded-xl border border-sand-200 bg-white p-5"
+                className="rounded-lg border border-cream-200 bg-white p-5"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-charcoal">{r.title}</h3>
+                    <h3 className="font-serif font-semibold text-ink">{r.title}</h3>
                     {r.description && (
-                      <p className="mt-1 text-sm text-charcoal-muted line-clamp-2">
+                      <p className="mt-1 text-sm text-ink-muted line-clamp-2">
                         {r.description}
                       </p>
                     )}
                   </div>
-                  <span className="ml-4 shrink-0 rounded-md bg-sand-100 px-2 py-0.5 text-xs text-charcoal-muted">
+                  <span className="ml-4 shrink-0 rounded-md bg-cream-100 px-2 py-0.5 text-xs text-ink-muted">
                     {r.resourceType}
                   </span>
                 </div>

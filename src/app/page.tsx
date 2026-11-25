@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getFeaturedPartners, getFeaturedAnnouncements } from "@/lib/contentful";
 import PartnerCard from "@/components/PartnerCard";
-import TierBadge from "@/components/TierBadge";
 import AnthropicLogo from "@/components/AnthropicLogo";
 
 export const revalidate = 60;
@@ -15,34 +14,28 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-charcoal">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-amber-500 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-amber-600 blur-3xl" />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-6 py-24 text-center sm:py-32">
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
-            <AnthropicLogo className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+      <section className="border-b border-cream-200">
+        <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+          <AnthropicLogo className="mb-8 h-8 w-8 text-ink" />
+          <h1 className="max-w-3xl font-serif text-4xl font-semibold leading-tight text-ink sm:text-5xl">
             Claude Partner Hub
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/70">
-            Your central hub for the Claude Partner Network &mdash; resources,
-            enablement, and everything you need to build and sell with Claude.
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-muted">
+            Resources, enablement, and everything you need to build and
+            sell with Claude — from the Claude Partner Network.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/partners"
-              className="rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-amber-700"
+              className="rounded-md bg-ink px-5 py-2.5 text-sm font-medium text-cream-50 transition-colors hover:bg-ink-light"
             >
-              Explore Partners
+              Explore partners
             </Link>
             <Link
               href="/resources"
-              className="rounded-lg bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/20"
+              className="rounded-md border border-cream-200 bg-white px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-cream-300 hover:bg-cream-50"
             >
-              Browse Resources
+              Browse resources
             </Link>
           </div>
         </div>
@@ -50,24 +43,24 @@ export default async function HomePage() {
 
       {/* Featured Partners */}
       {partners.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 py-16">
+        <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="flex items-end justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-charcoal">
-                Featured Partners
+              <h2 className="font-serif text-2xl font-semibold text-ink">
+                Featured partners
               </h2>
-              <p className="mt-1 text-charcoal-muted">
+              <p className="mt-2 text-ink-muted">
                 Leading organizations in the Claude Partner Network
               </p>
             </div>
             <Link
               href="/partners"
-              className="hidden text-sm font-medium text-amber-700 hover:text-amber-800 sm:block"
+              className="hidden text-sm font-medium text-tawny hover:text-tawny-hover sm:block"
             >
-              View all partners &rarr;
+              View all
             </Link>
           </div>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {partners.map((p) => (
               <PartnerCard key={p.id} partner={p} />
             ))}
@@ -77,39 +70,39 @@ export default async function HomePage() {
 
       {/* Latest Announcements */}
       {announcements.length > 0 && (
-        <section className="border-t border-sand-200 bg-white">
-          <div className="mx-auto max-w-6xl px-6 py-16">
+        <section className="border-t border-cream-200">
+          <div className="mx-auto max-w-6xl px-6 py-20">
             <div className="flex items-end justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-charcoal">
-                  Latest News
+                <h2 className="font-serif text-2xl font-semibold text-ink">
+                  Latest news
                 </h2>
-                <p className="mt-1 text-charcoal-muted">
+                <p className="mt-2 text-ink-muted">
                   Announcements and updates from the Claude Partner Network
                 </p>
               </div>
               <Link
                 href="/announcements"
-                className="hidden text-sm font-medium text-amber-700 hover:text-amber-800 sm:block"
+                className="hidden text-sm font-medium text-tawny hover:text-tawny-hover sm:block"
               >
-                All announcements &rarr;
+                All announcements
               </Link>
             </div>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
               {announcements.map((a) => (
                 <Link
                   key={a.id}
                   href={`/announcements/${a.slug}`}
-                  className="group rounded-xl border border-sand-200 p-6 transition-all hover:border-sand-300 hover:shadow-md"
+                  className="group rounded-lg border border-cream-200 bg-white p-6 transition-colors hover:border-cream-300"
                 >
-                  <time className="text-xs font-medium text-charcoal-muted">
+                  <time className="text-sm text-ink-muted">
                     {new Date(a.date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })}
                   </time>
-                  <h3 className="mt-2 text-lg font-semibold text-charcoal group-hover:text-amber-700 transition-colors">
+                  <h3 className="mt-2 font-serif text-lg font-semibold text-ink transition-colors group-hover:text-tawny">
                     {a.title}
                   </h3>
                 </Link>

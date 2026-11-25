@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
+import { Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+const serif = Source_Serif_4({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-serif",
+  weight: ["400", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Claude Partner Hub",
@@ -15,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={serif.variable}>
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <Header />
         <main className="flex-1">{children}</main>

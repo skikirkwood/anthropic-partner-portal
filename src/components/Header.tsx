@@ -14,13 +14,11 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-sand-200 bg-sand-50/95 backdrop-blur supports-[backdrop-filter]:bg-sand-50/80">
+    <header className="sticky top-0 z-50 border-b border-cream-200 bg-cream-100/95 backdrop-blur supports-[backdrop-filter]:bg-cream-100/80">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-charcoal">
-            <AnthropicLogo className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-lg font-semibold text-charcoal">
+          <AnthropicLogo className="h-5 w-5 text-ink" />
+          <span className="text-sm font-medium tracking-tight text-ink">
             Claude Partner Hub
           </span>
         </Link>
@@ -31,7 +29,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-charcoal-muted transition-colors hover:text-charcoal"
+              className="text-sm text-ink-muted transition-colors hover:text-ink"
             >
               {link.label}
             </Link>
@@ -45,11 +43,11 @@ export default function Header() {
           aria-label="Toggle menu"
         >
           <svg
-            className="h-6 w-6 text-charcoal"
+            className="h-5 w-5 text-ink"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth={2}
+            strokeWidth={1.5}
           >
             {menuOpen ? (
               <path
@@ -70,12 +68,12 @@ export default function Header() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <nav className="border-t border-sand-200 px-6 py-4 md:hidden">
+        <nav className="border-t border-cream-200 px-6 py-4 md:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="block py-2 text-sm font-medium text-charcoal-muted transition-colors hover:text-charcoal"
+              className="block py-2 text-sm text-ink-muted transition-colors hover:text-ink"
               onClick={() => setMenuOpen(false)}
             >
               {link.label}

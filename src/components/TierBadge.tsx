@@ -1,14 +1,14 @@
 const tierStyles: Record<string, string> = {
-  Gold: "bg-amber-100 text-amber-800 ring-amber-300",
-  Silver: "bg-slate-100 text-slate-700 ring-slate-300",
-  Bronze: "bg-orange-100 text-orange-800 ring-orange-300",
+  Gold: "bg-amber-50 text-amber-800 ring-amber-200",
+  Silver: "bg-slate-50 text-slate-600 ring-slate-200",
+  Bronze: "bg-orange-50 text-orange-700 ring-orange-200",
 };
 
 export default function TierBadge({ tier }: { tier: string }) {
   const classes = tierStyles[tier] ?? tierStyles.Bronze;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${classes}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${classes}`}
     >
       {tier}
     </span>

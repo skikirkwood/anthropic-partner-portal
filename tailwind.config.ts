@@ -8,19 +8,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        cream: {
+          DEFAULT: "#F5F0E8",
+          50: "#FAF8F4",
+          100: "#F5F0E8",
+          200: "#E8E1D5",
+          300: "#D6CDB",
+        },
+        ink: {
+          DEFAULT: "#191919",
+          light: "#3D3833",
+          muted: "#70695E",
+        },
+        tawny: {
+          DEFAULT: "#C4704B",
+          light: "#F0E6DF",
+          hover: "#A85D3D",
+        },
+        // Keep sand/charcoal as aliases for backward compat during transition
         sand: {
-          50: "#faf9f7",
-          100: "#f5f3ef",
-          200: "#e8e4dd",
-          300: "#d4cec4",
+          50: "#FAF8F4",
+          100: "#F5F0E8",
+          200: "#E8E1D5",
+          300: "#D6CDB",
         },
         charcoal: {
-          DEFAULT: "#1a1a2e",
-          light: "#2d2d44",
-          muted: "#6b7280",
+          DEFAULT: "#191919",
+          light: "#3D3833",
+          muted: "#70695E",
         },
       },
       fontFamily: {
+        serif: [
+          "var(--font-serif)",
+          "Georgia",
+          "Times New Roman",
+          "serif",
+        ],
         sans: [
           "system-ui",
           "-apple-system",

@@ -12,9 +12,9 @@ export default async function ResourcesPage() {
   const resources = await getAllResources();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-charcoal">Resources</h1>
-      <p className="mt-2 text-charcoal-muted">
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <h1 className="font-serif text-3xl font-semibold text-ink">Resources</h1>
+      <p className="mt-2 text-ink-muted">
         Technical documentation, guides, and enablement materials for Anthropic
         partners.
       </p>

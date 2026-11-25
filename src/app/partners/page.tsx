@@ -12,9 +12,9 @@ export default async function PartnersPage() {
   const partners = await getAllPartners();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-charcoal">Partner Directory</h1>
-      <p className="mt-2 text-charcoal-muted">
+    <div className="mx-auto max-w-6xl px-6 py-16">
+      <h1 className="font-serif text-3xl font-semibold text-ink">Partner Directory</h1>
+      <p className="mt-2 text-ink-muted">
         Explore Anthropic&apos;s certified implementation and consulting
         partners.
       </p>

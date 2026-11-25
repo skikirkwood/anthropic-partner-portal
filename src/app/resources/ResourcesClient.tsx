@@ -17,7 +17,7 @@ const tierLevels = ["All", "Bronze", "Silver", "Gold"];
 const tierIcons: Record<string, string> = {
   Bronze: "text-orange-600",
   Silver: "text-slate-500",
-  Gold: "text-amber-600",
+  Gold: "text-tawny",
 };
 
 export default function ResourcesClient({
@@ -43,7 +43,7 @@ export default function ResourcesClient({
         <select
           value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value)}
-          className="rounded-lg border border-sand-200 bg-white px-3 py-2.5 text-sm text-charcoal focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+          className="rounded-lg border border-cream-200 bg-white px-3 py-2.5 text-sm text-ink focus:border-tawny focus:outline-none focus:ring-1 focus:ring-tawny"
         >
           {resourceTypes.map((t) => (
             <option key={t} value={t}>
@@ -54,7 +54,7 @@ export default function ResourcesClient({
         <select
           value={tierFilter}
           onChange={(e) => setTierFilter(e.target.value)}
-          className="rounded-lg border border-sand-200 bg-white px-3 py-2.5 text-sm text-charcoal focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+          className="rounded-lg border border-cream-200 bg-white px-3 py-2.5 text-sm text-ink focus:border-tawny focus:outline-none focus:ring-1 focus:ring-tawny"
         >
           {tierLevels.map((t) => (
             <option key={t} value={t}>
@@ -70,10 +70,10 @@ export default function ResourcesClient({
           {filtered.map((r) => (
             <div
               key={r.id}
-              className="flex flex-col rounded-xl border border-sand-200 bg-white p-6"
+              className="flex flex-col rounded-lg border border-cream-200 bg-white p-6"
             >
               <div className="flex items-start justify-between gap-3">
-                <span className="rounded-md bg-sand-100 px-2 py-0.5 text-xs font-medium text-charcoal-muted">
+                <span className="rounded-md bg-cream-100 px-2 py-0.5 text-xs font-medium text-ink-muted">
                   {r.resourceType}
                 </span>
                 {r.minimumTier && (
@@ -86,11 +86,11 @@ export default function ResourcesClient({
                   </span>
                 )}
               </div>
-              <h3 className="mt-3 text-lg font-semibold text-charcoal">
+              <h3 className="mt-3 font-serif text-lg font-semibold text-ink">
                 {r.title}
               </h3>
               {r.description && (
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-charcoal-muted line-clamp-3">
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-muted line-clamp-3">
                   {r.description}
                 </p>
               )}
@@ -99,7 +99,7 @@ export default function ResourcesClient({
                   href={r.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center text-sm font-medium text-amber-700 hover:text-amber-800"
+                  className="mt-4 inline-flex items-center text-sm font-medium text-tawny hover:text-tawny-hover"
                 >
                   Download &darr;
                 </a>
@@ -109,7 +109,7 @@ export default function ResourcesClient({
         </div>
       ) : (
         <div className="mt-16 text-center">
-          <p className="text-charcoal-muted">
+          <p className="text-ink-muted">
             No resources match your filters.
           </p>
         </div>

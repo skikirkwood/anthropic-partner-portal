@@ -12,9 +12,9 @@ export default async function AnnouncementsPage() {
   const announcements = await getAllAnnouncements();
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-charcoal">Announcements</h1>
-      <p className="mt-2 text-charcoal-muted">
+    <div className="mx-auto max-w-4xl px-6 py-16">
+      <h1 className="font-serif text-3xl font-semibold text-ink">Announcements</h1>
+      <p className="mt-2 text-ink-muted">
         News, updates, and program announcements for the Anthropic partner
         community.
       </p>
@@ -24,10 +24,10 @@ export default async function AnnouncementsPage() {
           <Link
             key={a.id}
             href={`/announcements/${a.slug}`}
-            className="group block rounded-xl border border-sand-200 bg-white p-6 transition-all hover:border-sand-300 hover:shadow-md"
+            className="group block rounded-lg border border-cream-200 bg-white p-6 transition-all hover:border-cream-300"
           >
             <div className="flex items-center gap-3">
-              <time className="text-xs font-medium text-charcoal-muted">
+              <time className="text-xs font-medium text-ink-muted">
                 {new Date(a.date).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
@@ -35,19 +35,19 @@ export default async function AnnouncementsPage() {
                 })}
               </time>
               {a.featured && (
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                <span className="rounded-full bg-tawny-light px-2 py-0.5 text-xs font-semibold text-tawny">
                   Featured
                 </span>
               )}
             </div>
-            <h2 className="mt-2 text-xl font-semibold text-charcoal group-hover:text-amber-700 transition-colors">
+            <h2 className="font-serif mt-2 text-xl font-semibold text-ink group-hover:text-tawny transition-colors">
               {a.title}
             </h2>
           </Link>
         ))}
 
         {announcements.length === 0 && (
-          <p className="text-center text-charcoal-muted">
+          <p className="text-center text-ink-muted">
             No announcements yet.
           </p>
         )}

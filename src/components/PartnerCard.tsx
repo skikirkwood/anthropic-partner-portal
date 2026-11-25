@@ -6,7 +6,7 @@ export default function PartnerCard({ partner }: { partner: Partner }) {
   return (
     <Link
       href={`/partners/${partner.slug}`}
-      className="group flex flex-col rounded-xl border border-sand-200 bg-white p-6 transition-all hover:border-sand-300 hover:shadow-md"
+      className="group flex flex-col rounded-lg border border-cream-200 bg-white p-6 transition-colors hover:border-cream-300"
     >
       <div className="mb-4 flex items-start justify-between">
         {partner.logoUrl ? (
@@ -16,19 +16,19 @@ export default function PartnerCard({ partner }: { partner: Partner }) {
             className="h-10 w-10 rounded-lg object-contain"
           />
         ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sand-200 text-sm font-bold text-charcoal">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cream-200 text-sm font-medium text-ink">
             {partner.name.charAt(0)}
           </div>
         )}
         <TierBadge tier={partner.tier} />
       </div>
 
-      <h3 className="text-lg font-semibold text-charcoal group-hover:text-amber-700 transition-colors">
+      <h3 className="font-serif text-lg font-semibold text-ink transition-colors group-hover:text-tawny">
         {partner.name}
       </h3>
 
       {partner.summary && (
-        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-charcoal-muted">
+        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-ink-muted">
           {partner.summary}
         </p>
       )}
@@ -38,13 +38,13 @@ export default function PartnerCard({ partner }: { partner: Partner }) {
           {partner.capabilities.slice(0, 3).map((cap) => (
             <span
               key={cap}
-              className="rounded-md bg-sand-100 px-2 py-0.5 text-xs text-charcoal-muted"
+              className="rounded bg-cream-100 px-2 py-0.5 text-xs text-ink-muted"
             >
               {cap}
             </span>
           ))}
           {partner.capabilities.length > 3 && (
-            <span className="rounded-md bg-sand-100 px-2 py-0.5 text-xs text-charcoal-muted">
+            <span className="rounded bg-cream-100 px-2 py-0.5 text-xs text-ink-muted">
               +{partner.capabilities.length - 3} more
             </span>
           )}

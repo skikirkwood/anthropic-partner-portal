@@ -34,7 +34,7 @@ export default function PartnerDirectoryClient({
           placeholder="Search partners or capabilities..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-sand-200 bg-white px-4 py-2.5 text-sm text-charcoal placeholder:text-charcoal-muted/50 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:max-w-sm"
+          className="w-full rounded-lg border border-cream-200 bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted/50 focus:border-tawny focus:outline-none focus:ring-1 focus:ring-tawny sm:max-w-sm"
         />
         <div className="flex gap-2">
           {tiers.map((tier) => (
@@ -43,8 +43,8 @@ export default function PartnerDirectoryClient({
               onClick={() => setTierFilter(tier)}
               className={`rounded-lg px-3.5 py-2 text-sm font-medium transition-colors ${
                 tierFilter === tier
-                  ? "bg-charcoal text-white"
-                  : "bg-sand-100 text-charcoal-muted hover:bg-sand-200"
+                  ? "bg-ink text-white"
+                  : "bg-cream-100 text-ink-muted hover:bg-cream-200"
               }`}
             >
               {tier}
@@ -62,7 +62,7 @@ export default function PartnerDirectoryClient({
         </div>
       ) : (
         <div className="mt-16 text-center">
-          <p className="text-charcoal-muted">
+          <p className="text-ink-muted">
             No partners match your filters. Try broadening your search.
           </p>
         </div>
