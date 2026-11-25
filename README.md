@@ -58,6 +58,75 @@ A Next.js 14 (App Router) partner portal for the Anthropic partner ecosystem, po
 3. Add all environment variables in the Vercel project settings.
 4. Deploy.
 
+## Architecture
+
+```
+src/
+  app/
+    page.tsx                    # Homepage — featured partners + announcements
+    layout.tsx                  # Root layout with Header, Footer, SessionWrapper
+    globals.css                 # Tailwind base + custom design tokens
+    not-found.tsx               # 404 page
+    sign-in/page.tsx            # NextAuth credentials sign-in form
+    HomepageLive.tsx            # Live Preview wrapper for homepage
+    about/
+      page.tsx                  # About page — mission, values, stats, milestones
+      AboutPageLive.tsx         # Live Preview wrapper
+    announcements/
+      page.tsx                  # Announcement listing
+      [slug]/
+        page.tsx                # Announcement detail with rich text body
+        AnnouncementDetailLive.tsx
+    partners/
+      page.tsx                  # Partner directory with search + tier filter
+      PartnerDirectoryClient.tsx  # Client component for filtering
+      [slug]/
+        page.tsx                # Partner profile page
+        PartnerDetailLive.tsx
+    resources/
+      page.tsx                  # Resource catalog — all tiers visible
+      ResourcesClient.tsx       # Client component for type + tier filtering
+      [slug]/
+        page.tsx                # Resource detail — tier-gated access check
+        ResourceDetailLive.tsx
+    api/
+      auth/[...nextauth]/route.ts  # NextAuth API route handler
+      draft/route.ts               # Enable Contentful Draft Mode
+      disable-draft/route.ts       # Disable Draft Mode
+  components/
+    Header.tsx                  # Top nav with auth UI + locale chooser
+    Footer.tsx                  # Site footer
+    AnthropicLogo.tsx           # SVG logo component
+    ContentfulPreviewProvider.tsx  # Wraps pages in Draft Mode for live updates
+    PartnerCard.tsx             # Partner grid card with tier badge + capabilities
+    RichTextRenderer.tsx        # Renders Contentful rich text documents
+    SessionWrapper.tsx          # NextAuth SessionProvider for client components
+    TierBadge.tsx               # Colored tier label (Platinum/Gold/Silver)
+    UpgradeModal.tsx            # Shown when user tier < resource minimumTier
+  lib/
+    contentful.ts               # Contentful CDA/CPA clients + 15 fetch functions
+    locale.ts                   # Server-side cookie-based locale reader
+    tiers.ts                    # Domain-to-tier mapping + access checks
+  auth.ts                       # NextAuth config with demo credentials
+  middleware.ts                 # Route protection — redirects unauthenticated users
+```
+
+### How pages work
+
+Every page is a React Server Component that reads the locale cookie, fetches content from Contentful in that locale, and renders it. Listing pages (partners, resources, announcements) pass data to a client component that handles filtering and search without additional network requests.
+
+### Draft Mode and Live Preview
+
+When Draft Mode is enabled via `/api/draft`, pages switch from the Content Delivery API to the Content Preview API and wrap content in a `ContentfulPreviewProvider`. Each detail page has a companion `*Live.tsx` component that receives the raw Contentful entry and subscribes to real-time field updates via `@contentful/live-preview`. Inspector Mode annotations let editors click any field to jump to it in the Contentful web app.
+
+### Tier-based content gating
+
+The resource detail page calls `auth()` to get the current session, derives the user's partner tier from their email domain via `tiers.ts`, and compares it to the resource's `minimumTier` field. If the user's tier is insufficient, the page renders an `UpgradeModal` instead of the resource content. The resource listing page is ungated — all users see every card.
+
+### Static generation with ISR
+
+Pages are statically generated at build time via `generateStaticParams` and revalidated every 60 seconds (`revalidate = 60`). New content published in Contentful appears on the next revalidation cycle without a redeploy.
+
 ## Content Model
 
 Seven Contentful content types power the site:
