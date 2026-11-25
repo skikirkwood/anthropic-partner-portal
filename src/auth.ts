@@ -24,6 +24,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             password: "deloitte123",
             name: "Deloitte Partner",
           },
+          {
+            id: "3",
+            email: "partner@slalom.com",
+            password: "slalom123",
+            name: "Slalom Partner",
+          },
         ];
 
         const user = demoUsers.find(

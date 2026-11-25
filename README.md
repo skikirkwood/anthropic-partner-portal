@@ -45,10 +45,11 @@ A Next.js 14 (App Router) partner portal for the Anthropic partner ecosystem, po
 
 ## Demo Credentials
 
-| Email | Password | Role |
-| --- | --- | --- |
-| demo@anthropic.com | demo123 | Anthropic staff |
-| partner@deloitte.com | deloitte123 | Partner user |
+| Email | Password | Role | Tier |
+| --- | --- | --- | --- |
+| demo@anthropic.com | demo123 | Anthropic staff | Platinum |
+| partner@deloitte.com | deloitte123 | Deloitte partner | Platinum |
+| partner@slalom.com | slalom123 | Slalom partner | Silver |
 
 ## Deploy to Vercel
 
@@ -72,6 +73,12 @@ Seven Contentful content types power the site:
 | **CTA** | Reusable call-to-action blocks referenced by Homepage and About Page |
 
 All user-facing text fields are localized across three locales: `en-US` (default), `fr-CA`, and `de-DE`.
+
+## Tier-Based Content Gating
+
+Resources have a `minimumTier` field (Silver, Gold, or Platinum). When a signed-in user clicks a resource that requires a higher tier than their partnership level, an upgrade modal is shown instead of the content. The user's tier is derived from their email domain (e.g., `deloitte.com` → Platinum, `slalom.com` → Silver). Anthropic staff (`anthropic.com`) have full Platinum access.
+
+The resource listing page remains fully visible to all users — gating only applies when opening a specific resource.
 
 ## Localization
 

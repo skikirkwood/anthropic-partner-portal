@@ -7,8 +7,11 @@ import {
   getRawEntryBySlug,
 } from "@/lib/contentful";
 import { getLocale } from "@/lib/locale";
+import { auth } from "@/auth";
+import { getTierForEmail, hasAccess } from "@/lib/tiers";
 import RichTextRenderer from "@/components/RichTextRenderer";
 import TierBadge from "@/components/TierBadge";
+import UpgradeModal from "@/components/UpgradeModal";
 import ResourceDetailLive from "./ResourceDetailLive";
 import type { Metadata } from "next";
 
@@ -50,6 +53,31 @@ export default async function ResourceDetailPage({
   // Published mode — mapped resource
   const resource = await getResourceBySlug(params.slug, preview, locale);
   if (!resource) notFound();
+
+  // --- Tier-based content gating ---
+  const session = await auth();
+  const userEmail = session?.user?.email ?? "";
+  const userTier = getTierForEmail(userEmail);
+  const canView = hasAccess(userTier, resource.minimumTier);
+
+  if (!canView) {
+    return (
+      <div className="mx-auto max-w-3xl px-6 py-16">
+        <nav className="mb-8 text-sm text-ink-muted">
+          <Link href="/resources" className="hover:text-ink">
+            Resources
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-ink">{resource.title}</span>
+        </nav>
+        <UpgradeModal
+          requiredTier={resource.minimumTier!}
+          currentTier={userTier}
+          resourceTitle={resource.title}
+        />
+      </div>
+    );
+  }
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
