@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContentfulPreviewProvider from "@/components/ContentfulPreviewProvider";
+import SessionWrapper from "@/components/SessionWrapper";
 
 const serif = Source_Serif_4({
   subsets: ["latin"],
@@ -29,11 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={serif.variable}>
       <body className="flex min-h-screen flex-col font-sans antialiased">
-        <ContentfulPreviewProvider isDraftMode={isDraftMode}>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </ContentfulPreviewProvider>
+        <SessionWrapper>
+          <ContentfulPreviewProvider isDraftMode={isDraftMode}>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </ContentfulPreviewProvider>
+        </SessionWrapper>
       </body>
     </html>
   );
