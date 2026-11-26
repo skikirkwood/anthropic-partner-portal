@@ -131,155 +131,30 @@ const KNOWLEDGE: {
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Contentful resource catalog — matches user queries to real content  */
+/*  Live Contentful CDA search — queries /api/search-resources          */
 /* ------------------------------------------------------------------ */
 
-const RESOURCES: {
+type SearchResult = {
   title: string;
   slug: string;
   description: string;
   resourceType: string;
-  keywords: string[];
-}[] = [
-  {
-    title: "Getting Started with the Claude API",
-    slug: "getting-started-claude-api",
-    description: "A comprehensive guide to authenticating, sending your first request, and understanding Claude's response format.",
-    resourceType: "Guide",
-    keywords: ["api", "getting started", "claude api", "authenticate", "request", "response", "sdk"],
-  },
-  {
-    title: "Building a Claude Practice: First 90 Days",
-    slug: "building-claude-practice-first-90-days",
-    description: "A phased roadmap for partners launching a Claude-focused practice within their organization.",
-    resourceType: "Guide",
-    keywords: ["practice", "building", "90 days", "roadmap", "launch", "organization", "partner practice"],
-  },
-  {
-    title: "Delivery Playbook: From Pilot to Production",
-    slug: "delivery-playbook-pilot-to-production",
-    description: "Best practices for running Claude implementation projects from initial pilot through production deployment.",
-    resourceType: "Guide",
-    keywords: ["delivery", "playbook", "pilot", "production", "implementation", "deployment", "project"],
-  },
-  {
-    title: "Co-selling Playbook: Discovery to Close",
-    slug: "co-selling-playbook-discovery-to-close",
-    description: "Step-by-step guidance for joint selling motions with Anthropic, from initial discovery through deal close.",
-    resourceType: "Video",
-    keywords: ["co-selling", "co-sell", "selling", "discovery", "close", "deal", "joint", "sales motion"],
-  },
-  {
-    title: "Enterprise Deployment Reference Architecture",
-    slug: "enterprise-deployment-reference-architecture",
-    description: "Reference architecture patterns for deploying Claude in enterprise environments.",
-    resourceType: "API Documentation",
-    keywords: ["enterprise", "deployment", "architecture", "reference", "infrastructure", "deploy"],
-  },
-  {
-    title: "Campaign in a Box: AI in Financial Services",
-    slug: "campaign-in-a-box-financial-services",
-    description: "Pre-built marketing campaign materials targeting the financial services vertical with Claude use cases.",
-    resourceType: "Case Study",
-    keywords: ["campaign", "financial services", "finance", "banking", "marketing", "vertical"],
-  },
-  {
-    title: "Healthcare Implementation Patterns",
-    slug: "healthcare-implementation-patterns",
-    description: "Implementation patterns and compliance guidance for deploying Claude in healthcare settings.",
-    resourceType: "API Documentation",
-    keywords: ["healthcare", "health", "medical", "compliance", "hipaa", "implementation"],
-  },
-  {
-    title: "Claude Partner Network: Program Overview",
-    slug: "cpn-program-overview",
-    description: "Overview of the Claude Partner Network program including benefits, requirements, and engagement models.",
-    resourceType: "Guide",
-    keywords: ["program", "overview", "partner network", "benefits", "requirements", "cpn"],
-  },
-  {
-    title: "Co-selling with Anthropic: How Referrals Work",
-    slug: "co-selling-how-referrals-work",
-    description: "How the Anthropic partner referral process works from submission to deal close.",
-    resourceType: "Guide",
-    keywords: ["co-selling", "referral", "referrals", "process", "submission"],
-  },
-  {
-    title: "Agent SDK Practice Accelerator",
-    slug: "agent-sdk-practice-accelerator",
-    description: "Accelerator program for partners building practices around Claude's Agent SDK capabilities.",
-    resourceType: "Whitepaper",
-    keywords: ["agent", "sdk", "accelerator", "agent sdk", "agentic", "tools"],
-  },
-  {
-    title: "Partner Portal Access Levels Explained",
-    slug: "portal-access-levels-explained",
-    description: "Explanation of content access tiers within the Claude Partner Network portal.",
-    resourceType: "Guide",
-    keywords: ["access", "levels", "portal", "tiers", "permissions", "gating"],
-  },
-  {
-    title: "Joint Offering Canvas",
-    slug: "joint-offering-canvas",
-    description: "A framework for designing joint solutions combining partner expertise with Claude capabilities.",
-    resourceType: "Guide",
-    keywords: ["joint offering", "canvas", "framework", "solution", "design", "joint solution"],
-  },
-];
+};
 
-/* ------------------------------------------------------------------ */
-/*  Resource matching — scores user query against resource catalog      */
-/* ------------------------------------------------------------------ */
-
-const STOP_WORDS = new Set([
-  "a","an","the","is","are","was","were","be","been","being","have","has","had",
-  "do","does","did","will","would","shall","should","may","might","must","can","could",
-  "i","me","my","we","our","you","your","he","she","it","they","them","their",
-  "this","that","these","those","what","which","who","whom","where","when","how",
-  "not","no","nor","but","or","and","if","then","so","than","too","very","just",
-  "about","tell","show","find","get","give","know","let","make","want","need",
-  "of","in","to","for","with","on","at","from","by","as","into","through","up","out",
-]);
-
-function scoreResource(query: string, resource: typeof RESOURCES[number]): number {
-  const q = query.toLowerCase();
-  const words = q.split(/\s+/).filter((w) => w.length > 1 && !STOP_WORDS.has(w));
-  if (words.length === 0) return 0;
-
-  let score = 0;
-  const titleLow = resource.title.toLowerCase();
-  const descLow = resource.description.toLowerCase();
-
-  // Exact substring match in title is a strong signal
-  if (titleLow.includes(q)) score += 10;
-
-  // Check each query word against title, description, and keywords
-  for (const word of words) {
-    if (titleLow.includes(word)) score += 3;
-    if (descLow.includes(word)) score += 1;
-    if (resource.keywords.some((kw) => kw.includes(word) || word.includes(kw))) score += 2;
+async function fetchMatchingResources(query: string): Promise<SearchResult[]> {
+  try {
+    const res = await fetch(
+      `/api/search-resources?q=${encodeURIComponent(query)}`
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.results as SearchResult[]) || [];
+  } catch {
+    return [];
   }
-
-  // Bonus for multi-word phrase matches in title
-  for (let len = Math.min(words.length, 4); len >= 2; len--) {
-    for (let start = 0; start <= words.length - len; start++) {
-      const phrase = words.slice(start, start + len).join(" ");
-      if (titleLow.includes(phrase)) score += len * 2;
-      if (resource.keywords.some((kw) => kw.includes(phrase))) score += len;
-    }
-  }
-
-  return score;
 }
 
-function matchResources(query: string, maxResults = 3): typeof RESOURCES[number][] {
-  const scored = RESOURCES.map((r) => ({ resource: r, score: scoreResource(query, r) }))
-    .filter((s) => s.score >= 3)
-    .sort((a, b) => b.score - a.score);
-  return scored.slice(0, maxResults).map((s) => s.resource);
-}
-
-function buildResourceCards(resources: typeof RESOURCES[number][]): string {
+function buildResourceCards(resources: SearchResult[]): string {
   if (resources.length === 0) return "";
   const cards = resources
     .map(
@@ -300,13 +175,14 @@ function buildResourceCards(resources: typeof RESOURCES[number][]): string {
 const FALLBACK_HTML =
   "I couldn't find a specific answer to that in the partner knowledge base. I can search across your Salesforce Partner Portal data, Contentful resources, and Anthropic documentation. Try asking about referrals, certifications, MDF funding, your deal pipeline, or partner tier requirements.";
 
-function findAnswer(query: string): BotMessage {
+async function findAnswer(query: string): Promise<BotMessage> {
   const q = query.toLowerCase();
   const knowledgeMatch = KNOWLEDGE.find((k) =>
     k.triggers.some((t) => q.includes(t))
   );
 
-  const matchedResources = matchResources(query);
+  // Live search against Contentful CDA
+  const matchedResources = await fetchMatchingResources(query);
   const resourceHtml = buildResourceCards(matchedResources);
   const resourceSources: Source[] =
     matchedResources.length > 0
@@ -391,18 +267,20 @@ export default function ClaudeAssistant() {
     if (open && inputRef.current) inputRef.current.focus();
   }, [open]);
 
-  function sendQuestion(q: string) {
+  async function sendQuestion(q: string) {
     if (!q || typing) return;
     const userMsg: UserMessage = { from: "user", text: q };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setTyping(true);
 
-    setTimeout(() => {
-      const reply = findAnswer(q);
-      setMessages((prev) => [...prev, reply]);
-      setTyping(false);
-    }, 800 + Math.random() * 600);
+    // Run CDA search and minimum typing delay in parallel
+    const [reply] = await Promise.all([
+      findAnswer(q),
+      new Promise((r) => setTimeout(r, 800 + Math.random() * 600)),
+    ]);
+    setMessages((prev) => [...prev, reply as BotMessage]);
+    setTyping(false);
   }
 
   function handleSend(e?: React.FormEvent) {

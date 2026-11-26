@@ -343,6 +343,21 @@ export async function getResourceBySlug(
   return res.items.length > 0 ? mapResource(res.items[0]) : null;
 }
 
+export async function searchResources(
+  query: string,
+  locale?: string
+): Promise<Resource[]> {
+  const c = getClient(false);
+  const res = await c.getEntries({
+    content_type: "resource",
+    query,
+    limit: 5,
+    include: 2,
+    ...(locale ? { locale } : {}),
+  });
+  return res.items.map(mapResource);
+}
+
 export async function getAllAnnouncements(preview = false, locale?: string): Promise<Announcement[]> {
   const c = getClient(preview);
   const res = await c.getEntries({
