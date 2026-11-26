@@ -148,10 +148,58 @@ async function fetchMatchingResources(query: string): Promise<SearchResult[]> {
     );
     if (!res.ok) return [];
     const data = await res.json();
-    return (data.results as SearchResult[]) || [];
+    const results = (data.results as SearchResult[]) || [];
+    if (results.length > 0) return results;
   } catch {
-    return [];
+    // fall through to client-side fallback
   }
+
+  // Client-side fallback: simple word matching against known resources
+  return clientSideMatch(query);
+}
+
+/* Lightweight client-side fallback if the API route is unavailable */
+const RESOURCE_INDEX: { title: string; slug: string; description: string; resourceType: string; words: string }[] = [
+  { title: "Getting Started with the Claude API", slug: "getting-started-claude-api", description: "A comprehensive guide to authenticating, sending your first request, and understanding Claude's response format.", resourceType: "Guide", words: "api getting started claude authenticate request response sdk" },
+  { title: "Building a Claude Practice: First 90 Days", slug: "building-claude-practice-first-90-days", description: "A phased roadmap for partners launching a Claude-focused practice.", resourceType: "Guide", words: "practice building 90 days roadmap launch partner" },
+  { title: "Delivery Playbook: From Pilot to Production", slug: "delivery-playbook-pilot-to-production", description: "Best practices for running Claude implementation projects.", resourceType: "Guide", words: "delivery playbook pilot production implementation deployment" },
+  { title: "Co-selling Playbook: Discovery to Close", slug: "co-selling-playbook-discovery-to-close", description: "Step-by-step guidance for joint selling motions with Anthropic.", resourceType: "Video", words: "co-selling selling discovery close deal joint sales" },
+  { title: "Enterprise Deployment Reference Architecture", slug: "enterprise-deployment-reference-architecture", description: "Reference architecture patterns for deploying Claude in enterprise environments.", resourceType: "API Documentation", words: "enterprise deployment architecture reference infrastructure" },
+  { title: "Campaign in a Box: AI in Financial Services", slug: "campaign-in-a-box-financial-services", description: "Pre-built marketing campaign materials for financial services.", resourceType: "Case Study", words: "campaign financial services finance banking marketing" },
+  { title: "Healthcare Implementation Patterns", slug: "healthcare-implementation-patterns", description: "Implementation patterns and compliance guidance for healthcare.", resourceType: "API Documentation", words: "healthcare health medical compliance hipaa implementation" },
+  { title: "Claude Partner Network: Program Overview", slug: "cpn-program-overview", description: "Overview of the Claude Partner Network program.", resourceType: "Guide", words: "program overview partner network benefits requirements" },
+  { title: "Co-selling with Anthropic: How Referrals Work", slug: "co-selling-how-referrals-work", description: "How the partner referral process works.", resourceType: "Guide", words: "co-selling referral referrals process" },
+  { title: "Agent SDK Practice Accelerator", slug: "agent-sdk-practice-accelerator", description: "Accelerator for partners building around Claude's Agent SDK.", resourceType: "Whitepaper", words: "agent sdk accelerator agentic tools" },
+  { title: "Partner Portal Access Levels Explained", slug: "portal-access-levels-explained", description: "Explanation of content access tiers in the portal.", resourceType: "Guide", words: "access levels portal tiers permissions" },
+  { title: "Joint Offering Canvas", slug: "joint-offering-canvas", description: "A framework for designing joint solutions with Claude.", resourceType: "Guide", words: "joint offering canvas framework solution design" },
+];
+
+function clientSideMatch(query: string): SearchResult[] {
+  const q = query.toLowerCase();
+  const qWords = q.split(/\s+/).filter((w) => w.length > 2);
+  if (qWords.length === 0) return [];
+
+  const scored = RESOURCE_INDEX.map((r) => {
+    let score = 0;
+    const title = r.title.toLowerCase();
+    if (title.includes(q)) score += 10;
+    for (const w of qWords) {
+      if (title.includes(w)) score += 3;
+      if (r.words.includes(w)) score += 2;
+      if (r.description.toLowerCase().includes(w)) score += 1;
+    }
+    return { r, score };
+  })
+    .filter((s) => s.score >= 4)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  return scored.map((s) => ({
+    title: s.r.title,
+    slug: s.r.slug,
+    description: s.r.description,
+    resourceType: s.r.resourceType,
+  }));
 }
 
 function buildResourceCards(resources: SearchResult[]): string {
@@ -274,13 +322,26 @@ export default function ClaudeAssistant() {
     setInput("");
     setTyping(true);
 
-    // Run CDA search and minimum typing delay in parallel
-    const [reply] = await Promise.all([
-      findAnswer(q),
-      new Promise((r) => setTimeout(r, 800 + Math.random() * 600)),
-    ]);
-    setMessages((prev) => [...prev, reply as BotMessage]);
-    setTyping(false);
+    try {
+      // Run CDA search and minimum typing delay in parallel
+      const [reply] = await Promise.all([
+        findAnswer(q),
+        new Promise((r) => setTimeout(r, 800 + Math.random() * 600)),
+      ]);
+      setMessages((prev) => [...prev, reply as BotMessage]);
+    } catch (err) {
+      console.error("Claude Assistant error:", err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          from: "bot" as const,
+          html: FALLBACK_HTML,
+          sources: [],
+        },
+      ]);
+    } finally {
+      setTyping(false);
+    }
   }
 
   function handleSend(e?: React.FormEvent) {
